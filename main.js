@@ -8,7 +8,7 @@ const typstTemplate = `
 #let subject = sys.inputs.at("subject", default: "Lobende Erwähnung der korrekten Umsetzung der DIN 5008 (Form B)")
 #let foldmarks = sys.inputs.at("foldmarks", default: "true")
 #let pagenumbers = sys.inputs.at("pagenumbers", default: "false")
-#let body = sys.inputs.at("body", default: "Sehr geehrte Damen und Herren,\\n\\nmit großer Freude und außerordentlicher Genugtuung habe ich festgestellt, dass das Layout dieses Schreibens nun exakt den Vorgaben der *DIN 5008 (Form B)* entspricht. Es ist mir stets ein tiefes inneres Bedürfnis, darauf hinzuweisen, dass die Loch- und Faltmarken auf den Millimeter genau sitzen (105 mm und 210 mm vom oberen Rand, selbstverständlich).\\n\\nIn einer Welt, die zunehmend im typografischen Chaos versinkt, ist die korrekte Positionierung des Anschriftenfeldes ein Fels in der Brandung. Ich möchte hiermit formvollendet beantragen, dass dieses erlesene Stück Software in das Register der vorbildlichsten digitalen Büroanwendungen aufgenommen wird.\\n\\nBitte bestätigen Sie mir den Eingang dieses Schreibens unter Angabe der exakten Zeitzone und in einem fensterlosen Umschlag, der per Einschreiben mit Rückschein versandt wird.\\n\\nMit vorzüglicher Hochachtung\\n\\nDr. Max Mustermann \\\n(Beauftragter für Normen und Standards)")
+#let body = sys.inputs.at("body", default: "Sehr geehrte Damen und Herren,\\n\\nmit großer Freude und außerordentlicher Genugtuung habe ich festgestellt, dass das Layout dieses Schreibens nun exakt den Vorgaben der *DIN 5008 (Form B)* entspricht. Es ist mir stets ein tiefes inneres Bedürfnis, darauf hinzuweisen, dass die Loch- und Faltmarken auf den Millimeter genau sitzen (105 mm und 210 mm vom oberen Rand, selbstverständlich).\\n\\nIn einer Welt, die zunehmend im typografischen Chaos versinkt, ist die korrekte Positionierung des Anschriftenfeldes ein Fels in der Brandung. Ich möchte hiermit formvollendet beantragen, dass dieses erlesene Stück Software in das Register der vorbildlichsten digitalen Büroanwendungen aufgenommen wird.\\n\\nBitte bestätigen Sie mir den Eingang dieses Schreibens unter Angabe der exakten Zeitzone und in einem fensterlosen Umschlag, der per Einschreiben mit Rückschein versandt wird.\\n\\nMit vorzüglicher Hochachtung\\n\\n\\n\\nDr. Max Mustermann \\\n(Beauftragter für Normen und Standards)\\n\\n*Anlagen*\\nZertifikat der Formtreue")
 
 #let font_family = sys.inputs.at("font_family", default: "Roboto")
 
@@ -50,20 +50,21 @@ const typstTemplate = `
 
     // DIN 5008 Type B Address Window (Anschriftenfeld)
     // Starts exactly 45mm from the top, 20mm from the left.
-    // 45mm to 62.7mm is the Zusatzzone (return address).
+    // Window is 45mm high and 85mm wide.
     #place(top + left, dx: 20mm, dy: 45mm)[
       #block(width: 85mm, height: 45mm)[
-        // Return address line (Rücksendeangabe), max 8pt
+        // 1 line Rücksendeangabe (max 8pt)
         #text(font: font_family, size: 8pt)[#underline[#sender.replace("\\n", " · ")]]
         
-        // Recipient address (Anschrift), starts approx 17.7mm below the top of the window
+        // 4 lines Zusatzzone + 6 lines Anschriftenzone
+        // Technically the Anschriftenzone starts at 17.7mm from the top of the window
         #v(17.7mm - 8pt)
         #text(font: font_family, size: 11pt)[#recipient]
       ]
     ]
 
     // Date (Datum) / Informationsblock
-    // Placed aligned with the top of the actual recipient address, flush right.
+    // According to DIN 5008 the Date should typically be flush right
     #place(top + right, dx: -20mm, dy: 45mm + 17.7mm)[
       #align(right)[
         #text(font: font_family, size: 11pt)[#date]
@@ -74,12 +75,16 @@ const typstTemplate = `
 
 #set text(font: font_family, size: 11pt)
 
+// The main text area must start two lines below the address window.
+// Address window ends at 90mm. Two standard lines (~8.46mm) = ~98.4mm from top.
+// The top margin is 100mm, so we are correctly positioned.
+
 // Subject (Betreff)
-// Placed approx two blank lines above the body text.
 #strong(eval(subject, mode: "markup"))
 
+// The salutation follows with two blank lines spacing to the subject line.
 #v(8.4mm)
-// Body
+// Body (contains salutation, text, greeting, signature, enclosures)
 #eval(body, mode: "markup")
 `;
 
