@@ -73,22 +73,36 @@ const typstTemplate = `
 #body
 `;
 
-async function fetchFont() {
-  const res = await fetch('/Roboto-Regular.ttf');
+async function fetchFont(url) {
+  const res = await fetch(url);
   const buffer = await res.arrayBuffer();
   return new Uint8Array(buffer);
 }
 
 let world = null;
-let robotoFontData = null;
+let robotoFonts = {};
+let bundledFonts = {};
+
+const defaultVariants = ["Regular", "Bold", "Italic", "BoldItalic"];
 
 async function setup() {
   world = World.new();
   
-  robotoFontData = await fetchFont();
-  const font = FontInput.new("Roboto-Regular.ttf", robotoFontData);
-  world.setFonts([font]);
+  // Load all Roboto variants by default
+  const fontInputs = [];
+  bundledFonts["Roboto"] = {};
+  
+  for (const variant of defaultVariants) {
+    try {
+      const data = await fetchFont(`/Roboto-${variant}.ttf`);
+      bundledFonts["Roboto"][variant] = data;
+      fontInputs.push(FontInput.new(`Roboto-${variant}.ttf`, data));
+    } catch (e) {
+      console.warn(`Could not load Roboto ${variant}`, e);
+    }
+  }
 
+  world.setFonts(fontInputs);
   updatePreview();
 }
 
@@ -137,18 +151,46 @@ document.getElementById('fontFamily').addEventListener('change', async (e) => {
   if (window.fontListenerAttached) return; // if local fonts loaded, the other listener handles it
   
   const selectedFamily = e.target.value;
-  const bundledMap = {
-    "Roboto": "/Roboto-Regular.ttf",
-    "Open Sans": "/OpenSans-Regular.ttf",
-    "Lora": "/Lora-Regular.ttf",
-    "Merriweather": "/Merriweather-Regular.ttf"
+  const bundledPrefixMap = {
+    "Roboto": "/Roboto",
+    "Open Sans": "/OpenSans",
+    "Lora": "/Lora",
+    "Merriweather": "/Merriweather"
   };
   
-  if (bundledMap[selectedFamily]) {
+  const prefix = bundledPrefixMap[selectedFamily];
+  if (prefix) {
     if (!bundledFonts[selectedFamily]) {
-      bundledFonts[selectedFamily] = await fetchFont(bundledMap[selectedFamily]);
+      bundledFonts[selectedFamily] = {};
     }
-    world.setFonts([FontInput.new(selectedFamily + ".ttf", bundledFonts[selectedFamily])]);
+    
+    const fontInputs = [];
+    
+    // Always add Roboto fallback first
+    if (bundledFonts["Roboto"]) {
+      for (const [variant, data] of Object.entries(bundledFonts["Roboto"])) {
+        fontInputs.push(FontInput.new(`Roboto-${variant}.ttf`, data));
+      }
+    }
+    
+    if (selectedFamily !== "Roboto") {
+      for (const variant of defaultVariants) {
+        if (!bundledFonts[selectedFamily][variant]) {
+          try {
+            bundledFonts[selectedFamily][variant] = await fetchFont(`${prefix}-${variant}.ttf`);
+          } catch(err) {
+            console.warn(`Failed to fetch ${selectedFamily} ${variant}`, err);
+          }
+        }
+        
+        if (bundledFonts[selectedFamily][variant]) {
+           const safeName = selectedFamily.replace(" ", "");
+           fontInputs.push(FontInput.new(`${safeName}-${variant}.ttf`, bundledFonts[selectedFamily][variant]));
+        }
+      }
+    }
+    
+    world.setFonts(fontInputs);
     updatePreview();
   }
 });
@@ -230,22 +272,28 @@ document.getElementById('loadLocalFontsBtn').addEventListener('click', async () 
     if (!window.fontListenerAttached) {
       fontSelect.addEventListener('change', async (e) => {
         const selectedFamily = e.target.value;
+        const fontInputs = [];
+        
+        // Always add Roboto fallback
+        if (bundledFonts["Roboto"]) {
+          for (const [variant, data] of Object.entries(bundledFonts["Roboto"])) {
+            fontInputs.push(FontInput.new(`Roboto-${variant}.ttf`, data));
+          }
+        }
+
         if (selectedFamily === "Roboto") {
-          world.setFonts([FontInput.new("Roboto-Regular.ttf", robotoFontData)]); // Restore original Roboto
+          world.setFonts(fontInputs); 
           updatePreview();
           return;
         }
         
         const familyFonts = familyMap.get(selectedFamily);
         if (familyFonts) {
-          const fontInputs = [FontInput.new("Roboto-Regular.ttf", robotoFontData)]; // Always keep Roboto as fallback
-          
           for (const localFont of familyFonts) {
             try {
               const blob = await localFont.blob();
               const buffer = await blob.arrayBuffer();
               const fontData = new Uint8Array(buffer);
-              // Provide an extension so Typst's internal parser knows how to handle the magic bytes
               const extension = blob.type.includes("truetype") ? ".ttf" : ".otf";
               fontInputs.push(FontInput.new(localFont.postscriptName + extension, fontData));
             } catch (err) {

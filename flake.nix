@@ -24,14 +24,10 @@
 
           preBuild = ''
             mkdir -p public
-            cp ${pkgs.roboto}/share/fonts/truetype/Roboto-Regular.ttf public/
-            cp ${pkgs.roboto}/share/fonts/truetype/Roboto-Bold.ttf public/
-            cp ${pkgs.open-sans}/share/fonts/truetype/OpenSans-Regular.ttf public/
-            cp ${pkgs.open-sans}/share/fonts/truetype/OpenSans-Bold.ttf public/
-            cp ${pkgs.lora}/share/fonts/truetype/Lora-Regular.ttf public/
-            cp ${pkgs.lora}/share/fonts/truetype/Lora-Bold.ttf public/
-            cp ${pkgs.merriweather}/share/fonts/truetype/Merriweather-Regular.ttf public/
-            cp ${pkgs.merriweather}/share/fonts/truetype/Merriweather-Bold.ttf public/
+            cp ${pkgs.roboto}/share/fonts/truetype/*.ttf public/
+            cp ${pkgs.open-sans}/share/fonts/truetype/*.ttf public/
+            cp ${pkgs.lora}/share/fonts/truetype/*.ttf public/
+            cp ${pkgs.merriweather}/share/fonts/truetype/*.ttf public/
           '';
 
           installPhase = ''
@@ -52,14 +48,10 @@
             
             # Copy Nix-provided fonts into the public directory for the dev server
             mkdir -p public
-            cp ${pkgs.roboto}/share/fonts/truetype/Roboto-Regular.ttf public/
-            cp ${pkgs.roboto}/share/fonts/truetype/Roboto-Bold.ttf public/
-            cp ${pkgs.open-sans}/share/fonts/truetype/OpenSans-Regular.ttf public/
-            cp ${pkgs.open-sans}/share/fonts/truetype/OpenSans-Bold.ttf public/
-            cp ${pkgs.lora}/share/fonts/truetype/Lora-Regular.ttf public/
-            cp ${pkgs.lora}/share/fonts/truetype/Lora-Bold.ttf public/
-            cp ${pkgs.merriweather}/share/fonts/truetype/Merriweather-Regular.ttf public/
-            cp ${pkgs.merriweather}/share/fonts/truetype/Merriweather-Bold.ttf public/
+            cp ${pkgs.roboto}/share/fonts/truetype/*.ttf public/
+            cp ${pkgs.open-sans}/share/fonts/truetype/*.ttf public/
+            cp ${pkgs.lora}/share/fonts/truetype/*.ttf public/
+            cp ${pkgs.merriweather}/share/fonts/truetype/*.ttf public/
             
             echo "Node.js version: $(node -v)"
             echo "npm version: $(npm -v)"
