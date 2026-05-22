@@ -23,11 +23,11 @@
           buildInputs = [ pkgs.nodejs_20 ];
 
           preBuild = ''
-            mkdir -p public
-            cp ${pkgs.roboto}/share/fonts/truetype/*.ttf public/
-            cp ${pkgs.open-sans}/share/fonts/truetype/*.ttf public/
-            cp ${pkgs.lora}/share/fonts/truetype/*.ttf public/
-            cp ${pkgs.merriweather}/share/fonts/truetype/*.ttf public/
+            mkdir -p public/fonts
+            cp ${pkgs.roboto}/share/fonts/truetype/*.ttf public/fonts/
+            cp ${pkgs.open-sans}/share/fonts/truetype/*.ttf public/fonts/
+            cp ${pkgs.lora}/share/fonts/truetype/*.ttf public/fonts/
+            cp ${pkgs.merriweather}/share/fonts/truetype/*.ttf public/fonts/
           '';
 
           installPhase = ''
@@ -47,11 +47,11 @@
             echo "letternow dev environment loaded"
 
             # Copy Nix-provided fonts into the public directory for the dev server
-            mkdir -p public
-            cp ${pkgs.roboto}/share/fonts/truetype/*.ttf public/
-            cp ${pkgs.open-sans}/share/fonts/truetype/*.ttf public/
-            cp ${pkgs.lora}/share/fonts/truetype/*.ttf public/
-            cp ${pkgs.merriweather}/share/fonts/truetype/*.ttf public/
+            mkdir -p public/fonts
+            cp ${pkgs.roboto}/share/fonts/truetype/*.ttf public/fonts/
+            cp ${pkgs.open-sans}/share/fonts/truetype/*.ttf public/fonts/
+            cp ${pkgs.lora}/share/fonts/truetype/*.ttf public/fonts/
+            cp ${pkgs.merriweather}/share/fonts/truetype/*.ttf public/fonts/
 
             echo "Node.js version: $(node -v)"
             echo "npm version: $(npm -v)"

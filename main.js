@@ -94,7 +94,7 @@ async function setup() {
 
   for (const variant of defaultVariants) {
     try {
-      const data = await fetchFont(`/Roboto-${variant}.ttf`);
+      const data = await fetchFont(import.meta.env.BASE_URL + `fonts/Roboto-${variant}.ttf`);
       bundledFonts["Roboto"][variant] = data;
       fontInputs.push(FontInput.new(`Roboto-${variant}.ttf`, data));
     } catch (e) {
@@ -152,10 +152,10 @@ document.getElementById('fontFamily').addEventListener('change', async (e) => {
 
   const selectedFamily = e.target.value;
   const bundledPrefixMap = {
-    "Roboto": "/Roboto",
-    "Open Sans": "/OpenSans",
-    "Lora": "/Lora",
-    "Merriweather": "/Merriweather"
+    "Roboto": "Roboto",
+    "Open Sans": "OpenSans",
+    "Lora": "Lora",
+    "Merriweather": "Merriweather"
   };
 
   const prefix = bundledPrefixMap[selectedFamily];
@@ -177,7 +177,7 @@ document.getElementById('fontFamily').addEventListener('change', async (e) => {
       for (const variant of defaultVariants) {
         if (!bundledFonts[selectedFamily][variant]) {
           try {
-            bundledFonts[selectedFamily][variant] = await fetchFont(`${prefix}-${variant}.ttf`);
+            bundledFonts[selectedFamily][variant] = await fetchFont(import.meta.env.BASE_URL + `fonts/${prefix}-${variant}.ttf`);
           } catch(err) {
             console.warn(`Failed to fetch ${selectedFamily} ${variant}`, err);
           }
