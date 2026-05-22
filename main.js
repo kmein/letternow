@@ -66,11 +66,11 @@ const typstTemplate = `
 
 // Subject (Betreff)
 #v(10mm)
-*#subject*
+#strong(eval(subject, mode: "markup"))
 
 #v(5mm)
 // Body
-#body
+#eval(body, mode: "markup")
 `;
 
 async function fetchFont(url) {
