@@ -57,11 +57,7 @@ const typstTemplate = `
 // Date
 #v(15mm)
 #align(right)[
-  #if date != "" {
-    date
-  } else {
-    datetime.today().display("[year]-[month]-[day]")
-  }
+  #date
 ]
 
 // Subject (Betreff)
@@ -112,7 +108,12 @@ function updatePreview() {
 
   const sender = document.getElementById('sender').value;
   const recipient = document.getElementById('recipient').value;
-  const date = document.getElementById('date').value;
+  // Let JavaScript handle the today fallback, because the Wasm-Typst datetime 
+  // might be completely zeroed out to the epoch (1970-01-01) depending on Wasm system bindings
+  let date = document.getElementById('date').value;
+  if (date === "") {
+    date = new Date().toISOString().split('T')[0];
+  }
   const subject = document.getElementById('subject').value;
   const foldmarks = document.getElementById('foldmarks').checked ? "true" : "false";
   const pagenumbers = document.getElementById('pagenumbers').checked ? "true" : "false";
@@ -321,7 +322,10 @@ document.getElementById('downloadBtn').addEventListener('click', () => {
 
   const sender = document.getElementById('sender').value;
   const recipient = document.getElementById('recipient').value;
-  const date = document.getElementById('date').value;
+  let date = document.getElementById('date').value;
+  if (date === "") {
+    date = new Date().toISOString().split('T')[0];
+  }
   const subject = document.getElementById('subject').value;
   const foldmarks = document.getElementById('foldmarks').checked ? "true" : "false";
   const pagenumbers = document.getElementById('pagenumbers').checked ? "true" : "false";
