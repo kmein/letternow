@@ -4,7 +4,8 @@ on:
   push:
     branches:
       - main
-
+permissions:
+  contents: write
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -13,10 +14,13 @@ jobs:
     - uses: DeterminateSystems/nix-installer-action@main
     - uses: DeterminateSystems/magic-nix-cache-action@main
     - run: nix build
-    - if: success()
-      uses: crazy-max/ghaction-github-pages@v2
+    - name: Prepare deployment directory
+      run: |
+        mkdir -p public
+        cp -r result/* public/
+    - uses: crazy-max/ghaction-github-pages@v2
       with:
         target_branch: gh-pages
-        build_dir: result
+        build_dir: public # Use the directory you just created
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
