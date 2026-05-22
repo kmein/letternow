@@ -136,6 +136,23 @@ document.getElementById('pagenumbers').addEventListener('change', updatePreview)
 document.getElementById('fontFamily').addEventListener('change', updatePreview);
 document.getElementById('body').addEventListener('input', updatePreview);
 
+// Tab switching logic
+document.getElementById('tab-editor').addEventListener('click', () => {
+  document.getElementById('tab-editor').classList.add('active');
+  document.getElementById('tab-preview').classList.remove('active');
+  document.getElementById('view-editor').classList.add('active');
+  document.getElementById('view-preview').classList.remove('active');
+});
+
+document.getElementById('tab-preview').addEventListener('click', () => {
+  document.getElementById('tab-preview').classList.add('active');
+  document.getElementById('tab-editor').classList.remove('active');
+  document.getElementById('view-preview').classList.add('active');
+  document.getElementById('view-editor').classList.remove('active');
+  // Re-render when switching to preview just to be safe
+  updatePreview();
+});
+
 document.getElementById('loadLocalFontsBtn').addEventListener('click', async () => {
   if (!window.queryLocalFonts) {
     alert("Your browser does not support the Local Font Access API (try Chrome/Edge).");

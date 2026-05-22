@@ -7,102 +7,229 @@
     body {
       font-family: system-ui, sans-serif;
       display: flex;
+      flex-direction: column;
       height: 100vh;
       margin: 0;
       background: #f4f4f5;
     }
-    .editor {
-      width: 40%;
-      padding: 20px;
+    
+    .tabs {
       display: flex;
-      flex-direction: column;
-      gap: 10px;
+      background: #1e293b;
+      padding: 10px 20px 0 20px;
+      gap: 5px;
+    }
+    .tab-btn {
+      background: #334155;
+      color: #94a3b8;
+      border: none;
+      padding: 12px 24px;
+      border-radius: 8px 8px 0 0;
+      cursor: pointer;
+      font-size: 16px;
+      font-weight: 500;
+    }
+    .tab-btn.active {
       background: white;
-      box-shadow: 2px 0 5px rgba(0,0,0,0.1);
-      z-index: 10;
+      color: #0f172a;
     }
-    .editor input, .editor textarea {
-      padding: 10px;
-      font-size: 14px;
-      border: 1px solid #ccc;
-      border-radius: 4px;
+    .tab-btn:hover:not(.active) {
+      background: #475569;
+      color: white;
     }
-    .editor textarea {
-      flex-grow: 1;
-      resize: none;
-    }
-    .preview {
-      width: 60%;
-      padding: 20px;
+
+    .main-container {
       display: flex;
+      flex-grow: 1;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .view {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: white;
+      display: none;
+      overflow-y: auto;
+    }
+    .view.active {
+      display: flex;
+    }
+
+    .editor {
+      width: 100%;
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 20px;
+      flex-direction: column;
+      gap: 15px;
+    }
+    
+    .editor h2 { margin-top: 0; }
+    
+    .editor input, .editor textarea {
+      padding: 12px;
+      font-size: 14px;
+      border: 1px solid #cbd5e1;
+      border-radius: 6px;
+      width: 100%;
+      box-sizing: border-box;
+    }
+    
+    .editor textarea {
+      resize: vertical;
+    }
+    
+    .editor #body {
+      min-height: 250px;
+    }
+
+    .preview {
+      width: 100%;
+      padding: 20px;
       flex-direction: column;
       align-items: center;
-      overflow-y: auto;
+      background: #f1f5f9;
     }
     .preview-container {
       background: white;
-      box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-      padding: 20px;
+      box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1);
+      padding: 0;
       width: 100%;
-      max-width: 800px;
-      min-height: 800px;
+      max-width: 210mm; /* A4 width */
+      min-height: 297mm; /* A4 height */
     }
     .preview-container svg {
       width: 100%;
       height: auto;
+      display: block;
     }
-    button {
-      padding: 10px;
+    
+    .download-wrapper {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      z-index: 100;
+    }
+    
+    button.primary {
+      padding: 12px 24px;
       background: #2563eb;
       color: white;
       border: none;
-      border-radius: 4px;
+      border-radius: 8px;
       cursor: pointer;
       font-size: 16px;
+      font-weight: bold;
+      box-shadow: 0 4px 6px -1px rgba(37,99,235,0.2);
     }
-    button:hover {
+    button.primary:hover {
       background: #1d4ed8;
+      box-shadow: 0 6px 8px -1px rgba(37,99,235,0.3);
     }
+    
+    .input-group {
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+    }
+    .input-group label.header {
+      font-size: 13px;
+      font-weight: 600;
+      color: #475569;
+    }
+    
+    .row {
+      display: flex;
+      gap: 20px;
+    }
+    .row > * { flex: 1; }
   </style>
 </head>
 <body>
-  <div class="editor">
-    <h2>Letter Info</h2>
-    <textarea id="sender" placeholder="Sender Name & Address" rows="3">John Doe
+  <div class="tabs">
+    <button class="tab-btn active" id="tab-editor">Editor</button>
+    <button class="tab-btn" id="tab-preview">Live Preview</button>
+  </div>
+  
+  <div class="main-container">
+    <div class="view editor active" id="view-editor">
+      <h2>Letter Details</h2>
+      
+      <div class="row">
+        <div class="input-group">
+          <label class="header">Sender</label>
+          <textarea id="sender" placeholder="John Doe&#10;123 Main St&#10;12345 Cityville" rows="3">John Doe
 123 Main St
 12345 Cityville</textarea>
-    <textarea id="recipient" placeholder="Recipient Name & Address" rows="3">Jane Smith
+        </div>
+        
+        <div class="input-group">
+          <label class="header">Recipient</label>
+          <textarea id="recipient" placeholder="Jane Smith&#10;456 Elm St&#10;67890 Townsburg" rows="3">Jane Smith
 456 Elm St
 67890 Townsburg</textarea>
-    <input type="text" id="date" placeholder="Date" value="22. May 2026">
-    <input type="text" id="subject" placeholder="Subject" value="Important Notice">
-    <div style="display: flex; gap: 10px; align-items: center;">
-      <select id="fontFamily" style="padding: 8px; flex-grow: 1;">
-        <option value="Roboto">Roboto (Default)</option>
-      </select>
-      <button id="loadLocalFontsBtn" style="padding: 8px; font-size: 12px; background: #4b5563;">Load System Fonts</button>
-    </div>
-    <label style="font-size: 14px; display: flex; align-items: center; gap: 5px;">
-      <input type="checkbox" id="foldmarks" checked>
-      Show fold & punch marks
-    </label>
-    <label style="font-size: 14px; display: flex; align-items: center; gap: 5px;">
-      <input type="checkbox" id="pagenumbers">
-      Show page numbers
-    </label>
-    <textarea id="body" placeholder="Letter body...">Dear Jane,
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="input-group">
+          <label class="header">Date</label>
+          <input type="text" id="date" placeholder="Leave empty for today" value="22. May 2026">
+        </div>
+        <div class="input-group">
+          <label class="header">Subject</label>
+          <input type="text" id="subject" placeholder="Letter Subject" value="Important Notice">
+        </div>
+      </div>
+      
+      <div class="input-group">
+        <label class="header">Typography</label>
+        <div style="display: flex; gap: 10px; align-items: center;">
+          <select id="fontFamily" style="padding: 10px; flex-grow: 1; border: 1px solid #cbd5e1; border-radius: 6px;">
+            <option value="Roboto">Roboto (Default)</option>
+          </select>
+          <button id="loadLocalFontsBtn" style="padding: 10px 15px; font-size: 14px; background: #475569; color: white; border: none; border-radius: 6px; cursor: pointer;">Load System Fonts</button>
+        </div>
+      </div>
+
+      <div class="row" style="padding: 10px 0;">
+        <label style="font-size: 14px; display: flex; align-items: center; gap: 8px; cursor: pointer;">
+          <input type="checkbox" id="foldmarks" checked>
+          Show fold & punch marks
+        </label>
+        <label style="font-size: 14px; display: flex; align-items: center; gap: 8px; cursor: pointer;">
+          <input type="checkbox" id="pagenumbers">
+          Show page numbers
+        </label>
+      </div>
+      
+      <div class="input-group">
+        <label class="header">Message Body</label>
+        <textarea id="body" placeholder="Write your letter here...">Dear Jane,
 
 This is a test letter to demonstrate the Wasm Typst integration.
 
 Best,
 John</textarea>
-    <button id="downloadBtn">Download PDF</button>
-  </div>
-  
-  <div class="preview">
-    <div class="preview-container" id="previewContainer">
-      Loading preview...
+      </div>
     </div>
+    
+    <div class="view preview" id="view-preview">
+      <div class="preview-container" id="previewContainer">
+        <div style="padding: 40px; text-align: center; color: #64748b;">Loading preview...</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="download-wrapper">
+    <button class="primary" id="downloadBtn">
+      <svg style="width: 18px; height: 18px; vertical-align: -3px; margin-right: 5px;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
+      Download PDF
+    </button>
   </div>
 
   <script type="module" src="/main.js"></script>
