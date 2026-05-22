@@ -8,7 +8,7 @@ const typstTemplate = `
 #let subject = sys.inputs.at("subject", default: "Lobende Erwähnung der korrekten Umsetzung der DIN 5008 (Form B)")
 #let foldmarks = sys.inputs.at("foldmarks", default: "true")
 #let pagenumbers = sys.inputs.at("pagenumbers", default: "false")
-#let body = sys.inputs.at("body", default: "Sehr geehrte Damen und Herren,\\n\\nmit großer Freude und außerordentlicher Genugtuung habe ich festgestellt, dass das Layout dieses Schreibens nun exakt den Vorgaben der *DIN 5008 (Form B)* entspricht. Es ist mir stets ein tiefes inneres Bedürfnis, darauf hinzuweisen, dass die Loch- und Faltmarken auf den Millimeter genau sitzen (105 mm und 210 mm vom oberen Rand, selbstverständlich).\\n\\nIn einer Welt, die zunehmend im typografischen Chaos versinkt, ist die korrekte Positionierung des Anschriftenfeldes ein Fels in der Brandung. Ich möchte hiermit formvollendet beantragen, dass dieses erlesene Stück Software in das Register der vorbildlichsten digitalen Büroanwendungen aufgenommen wird.\\n\\nBitte bestätigen Sie mir den Eingang dieses Schreibens unter Angabe der exakten Zeitzone und in einem fensterlosen Umschlag, der per Einschreiben mit Rückschein versandt wird.\\n\\nMit vorzüglicher Hochachtung\\n\\n\\n\\nDr. Max Mustermann \\\n(Beauftragter für Normen und Standards)\\n\\n*Anlagen*\\nZertifikat der Formtreue")
+#let body = sys.inputs.at("body", default: "Sehr geehrte Damen und Herren,\\n\\nmit großer Freude und außerordentlicher Genugtuung habe ich festgestellt, dass das Layout dieses Schreibens nun exakt den Vorgaben der *DIN 5008 (Form B)* entspricht. Es ist mir stets ein tiefes inneres Bedürfnis, darauf hinzuweisen, dass die Loch- und Faltmarken auf den Millimeter genau sitzen (105 mm und 210 mm vom oberen Rand, selbstverständlich).\\n\\nIn einer Welt, die zunehmend im typografischen Chaos versinkt, ist die korrekte Positionierung des Anschriftenfeldes ein Fels in der Brandung. Ich möchte hiermit formvollendet beantragen, dass dieses erlesene Stück Software in das Register der vorbildlichsten digitalen Büroanwendungen aufgenommen wird.\\n\\nBitte bestätigen Sie mir den Eingang dieses Schreibens unter Angabe der exakten Zeitzone und in einem fensterlosen Umschlag, der per Einschreiben mit Rückschein versandt wird.\\n\\nMit vorzüglicher Hochachtung\\n\\n\\n\\nDr. Max Mustermann \\\n(Beauftragter für Normen und Standards)\\n\\n#align(bottom)[*Anlagen*\\n- Zertifikat der Formtreue")
 
 #let font_family = sys.inputs.at("font_family", default: "Roboto")
 
@@ -27,7 +27,7 @@ const typstTemplate = `
   ],
   background: [
     // Use the background layer to place absolute elements independent of margins
-    
+
     // Fold marks & punch mark (Loch- und Faltmarken) for Type B
     // Per typst-letter-pro and print standards, slightly offset from the exact edge
     #if foldmarks == "true" [
@@ -76,8 +76,10 @@ const typstTemplate = `
     ]
 
     // Date (Datum) / Informationsblock
-    // Aligned with the first line of the recipient address (45mm + 12.7mm = 57.7mm)
-    #place(top + right, dx: -20mm, dy: 57.7mm)[
+    // According to DIN 5008, the date is often placed flush right on the same line as the destination
+    // or as part of the information block. By placing it at roughly 85mm from top (bottom of the address block),
+    // it appears ~2 lines above the subject (which starts at 100mm).
+    #place(top + right, dx: -20mm, dy: 85mm)[
       #align(right)[
         #text(font: font_family, size: 11pt)[#date]
       ]
@@ -143,7 +145,7 @@ function updatePreview() {
 
   const sender = document.getElementById('sender').value;
   const recipient = document.getElementById('recipient').value;
-  // Let JavaScript handle the today fallback, because the Wasm-Typst datetime 
+  // Let JavaScript handle the today fallback, because the Wasm-Typst datetime
   // might be completely zeroed out to the epoch (1970-01-01) depending on Wasm system bindings
   let date = document.getElementById('date').value;
   if (date === "") {
