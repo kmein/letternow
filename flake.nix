@@ -32,8 +32,8 @@
 
           installPhase = ''
             runHook preInstall
-            mkdir -p $out/share/letternow
-            cp -r dist/* $out/share/letternow/
+            mkdir -p $out
+            cp -r dist/* $out/
             runHook postInstall
           '';
         };
@@ -45,14 +45,14 @@
 
           shellHook = ''
             echo "letternow dev environment loaded"
-            
+
             # Copy Nix-provided fonts into the public directory for the dev server
             mkdir -p public
             cp ${pkgs.roboto}/share/fonts/truetype/*.ttf public/
             cp ${pkgs.open-sans}/share/fonts/truetype/*.ttf public/
             cp ${pkgs.lora}/share/fonts/truetype/*.ttf public/
             cp ${pkgs.merriweather}/share/fonts/truetype/*.ttf public/
-            
+
             echo "Node.js version: $(node -v)"
             echo "npm version: $(npm -v)"
           '';
