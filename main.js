@@ -28,20 +28,20 @@ const typstTemplate = `
     // Use the background layer to place absolute elements independent of margins
     
     // Fold marks & punch mark (Loch- und Faltmarken) for Type B
+    // Per typst-letter-pro and print standards, slightly offset from the exact edge
     #if foldmarks == "true" [
-      #place(top + left, dx: 0mm, dy: 105mm)[
-        #line(length: 4mm, stroke: 0.5pt)
+      #place(top + left, dx: 5mm, dy: 105mm)[
+        #line(length: 2.5mm, stroke: 0.25pt + black)
       ]
-      #place(top + left, dx: 0mm, dy: 148.5mm)[
-        #line(length: 6mm, stroke: 0.5pt)
+      #place(top + left, dx: 5mm, dy: 148.5mm)[
+        #line(length: 4mm, stroke: 0.25pt + black)
       ]
-      #place(top + left, dx: 0mm, dy: 210mm)[
-        #line(length: 4mm, stroke: 0.5pt)
+      #place(top + left, dx: 5mm, dy: 210mm)[
+        #line(length: 2.5mm, stroke: 0.25pt + black)
       ]
     ]
 
     // Sender Information / Letterhead (Top Right)
-    // Placed typically starting around 27mm from the top.
     #place(top + right, dx: -20mm, dy: 27mm)[
       #align(right)[
         #text(font: font_family, size: 11pt)[#sender]
@@ -50,21 +50,29 @@ const typstTemplate = `
 
     // DIN 5008 Type B Address Window (Anschriftenfeld)
     // Starts exactly 45mm from the top, 20mm from the left.
-    // Window is 45mm high and 85mm wide.
+    // Using a grid enforces the exact zone heights (17.7mm and 27.3mm).
     #place(top + left, dx: 20mm, dy: 45mm)[
       #block(width: 85mm, height: 45mm)[
-        // 1 line Rücksendeangabe (max 8pt)
-        #text(font: font_family, size: 8pt)[#underline[#sender.replace("\\n", " · ")]]
-        
-        // 4 lines Zusatzzone + 6 lines Anschriftenzone
-        // Technically the Anschriftenzone starts at 17.7mm from the top of the window
-        #v(17.7mm - 8pt)
-        #text(font: font_family, size: 11pt)[#recipient]
+        #grid(
+          columns: 1,
+          rows: (17.7mm, 27.3mm),
+          [
+            // Zusatzzone (return address)
+            #align(bottom)[
+              #pad(bottom: 0.65em)[
+                #text(font: font_family, size: 8pt)[#underline[#sender.replace("\\n", " · ")]]
+              ]
+            ]
+          ],
+          [
+            // Anschriftenzone (recipient)
+            #text(font: font_family, size: 11pt)[#recipient]
+          ]
+        )
       ]
     ]
 
     // Date (Datum) / Informationsblock
-    // According to DIN 5008 the Date should typically be flush right
     #place(top + right, dx: -20mm, dy: 45mm + 17.7mm)[
       #align(right)[
         #text(font: font_family, size: 11pt)[#date]
@@ -75,15 +83,19 @@ const typstTemplate = `
 
 #set text(font: font_family, size: 11pt)
 
+// Set justified text for the body to match typst-letter-pro standard
+#set par(justify: true)
+
 // The main text area must start two lines below the address window.
-// Address window ends at 90mm. Two standard lines (~8.46mm) = ~98.4mm from top.
-// The top margin is 100mm, so we are correctly positioned.
+// Address window ends at 90mm. Top margin is 100mm.
 
 // Subject (Betreff)
-#strong(eval(subject, mode: "markup"))
+#pad(right: 10%)[
+  #strong(eval(subject, mode: "markup"))
+]
 
 // The salutation follows with two blank lines spacing to the subject line.
-#v(8.4mm)
+#v(8.46mm)
 // Body (contains salutation, text, greeting, signature, enclosures)
 #eval(body, mode: "markup")
 `;
