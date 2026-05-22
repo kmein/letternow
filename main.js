@@ -14,8 +14,9 @@ const typstTemplate = `
 
 #set page(
   paper: "a4",
-  // Standard text area starts at 98.4mm from top for Type B, but we'll use 100mm for safety.
-  // Left margin for body text is 25mm.
+  // Standard text area starts at approx 98.4mm from top for Type B.
+  // Left margin (Fluchtlinie) is exactly 25mm.
+  // Right margin is typically 20mm (Deutsche Post minimum is 10mm).
   margin: (left: 25mm, right: 20mm, top: 100mm, bottom: 20mm),
   footer: [
     #if pagenumbers == "true" {
@@ -49,13 +50,15 @@ const typstTemplate = `
     ]
 
     // DIN 5008 Type B Address Window (Anschriftenfeld)
-    // Starts exactly 45mm from the top, 20mm from the left.
-    // Using a grid enforces the exact zone heights (17.7mm and 27.3mm).
-    #place(top + left, dx: 20mm, dy: 45mm)[
-      #block(width: 85mm, height: 45mm)[
+    // Starts exactly 45mm from the top.
+    // The text aligns with the "Fluchtlinie" at 25mm from the left edge.
+    // The printable area inside the window is 40mm high and 85mm wide (per Deutsche Post).
+    #place(top + left, dx: 25mm, dy: 45mm)[
+      #block(width: 85mm, height: 40mm)[
         #grid(
           columns: 1,
-          rows: (17.7mm, 27.3mm),
+          // 3 lines Zusatzzone (~12.7mm) + 6 lines Anschrift (~27.3mm) = 40mm
+          rows: (12.7mm, 27.3mm),
           [
             // Zusatzzone (return address)
             #align(bottom)[
@@ -73,7 +76,8 @@ const typstTemplate = `
     ]
 
     // Date (Datum) / Informationsblock
-    #place(top + right, dx: -20mm, dy: 45mm + 17.7mm)[
+    // Aligned with the first line of the recipient address (45mm + 12.7mm = 57.7mm)
+    #place(top + right, dx: -20mm, dy: 57.7mm)[
       #align(right)[
         #text(font: font_family, size: 11pt)[#date]
       ]
