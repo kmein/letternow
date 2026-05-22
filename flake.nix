@@ -1,5 +1,5 @@
 {
-  description = "letternow web application";
+  description = "LetterNow web application";
 
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
@@ -44,7 +44,7 @@
           ];
 
           shellHook = ''
-            echo "letternow dev environment loaded"
+            echo "LetterNow dev environment loaded"
 
             # Copy Nix-provided fonts into the public directory for the dev server
             mkdir -p public/fonts
