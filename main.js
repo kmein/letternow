@@ -2,13 +2,13 @@
 import { World, FontInput, SourceInput } from '@brief-jetzt/wasm-typst';
 
 const typstTemplate = `
-#let sender = sys.inputs.at("sender", default: "John Doe\\n123 Main St")
-#let recipient = sys.inputs.at("recipient", default: "Jane Smith\\n456 Elm St")
+#let sender = sys.inputs.at("sender", default: "Dr. Max Mustermann\\nNormenausschussweg 42\\n10115 Berlin")
+#let recipient = sys.inputs.at("recipient", default: "Deutsches Institut für Normung e.V.\\nAbteilung für Briefformate\\nAm DIN-Platz 1\\n10772 Berlin")
 #let date = sys.inputs.at("date", default: "")
-#let subject = sys.inputs.at("subject", default: "Important Notice")
+#let subject = sys.inputs.at("subject", default: "Lobende Erwähnung der korrekten Umsetzung der DIN 5008 (Form A und B)")
 #let foldmarks = sys.inputs.at("foldmarks", default: "true")
 #let pagenumbers = sys.inputs.at("pagenumbers", default: "false")
-#let body = sys.inputs.at("body", default: "Dear Jane,\n\nThis is a test letter to demonstrate the Wasm Typst integration.\n\nBest, \n\nJohn")
+#let body = sys.inputs.at("body", default: "Sehr geehrte Damen und Herren,\\n\\nmit großer Freude und außerordentlicher Genugtuung habe ich festgestellt, dass das Layout dieses Schreibens exakt den Vorgaben der *DIN 5008* entspricht. Es ist mir stets ein tiefes inneres Bedürfnis, darauf hinzuweisen, dass die Loch- und Faltmarken auf den Millimeter genau sitzen (27 mm vom oberen Rand, selbstverständlich).\\n\\nIn einer Welt, die zunehmend im typografischen Chaos versinkt, ist die korrekte Positionierung des Anschriftenfeldes ein Fels in der Brandung. Ich möchte hiermit formvollendet beantragen, dass dieses erlesene Stück Software in das Register der vorbildlichsten digitalen Büroanwendungen aufgenommen wird.\\n\\nBitte bestätigen Sie mir den Eingang dieses Schreibens unter Angabe der exakten Zeitzone und in einem fensterlosen Umschlag, der per Einschreiben mit Rückschein versandt wird.\\n\\nMit vorzüglicher Hochachtung\\n\\nDr. Max Mustermann\\n(Beauftragter für Normen und Standards)")
 
 #let font_family = sys.inputs.at("font_family", default: "Roboto")
 
