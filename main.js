@@ -156,20 +156,42 @@ document.getElementById('fontFamily').addEventListener('change', async (e) => {
 document.getElementById('body').addEventListener('input', updatePreview);
 
 // Tab switching logic
+function switchTab(activeTabId, activeViewId) {
+  const tabs = ['tab-editor', 'tab-preview', 'tab-about', 'tab-legal'];
+  const views = ['view-editor', 'view-preview', 'view-about', 'view-legal'];
+  
+  tabs.forEach(tab => {
+    if (tab === activeTabId) {
+      document.getElementById(tab).classList.add('active');
+    } else {
+      document.getElementById(tab).classList.remove('active');
+    }
+  });
+  
+  views.forEach(view => {
+    if (view === activeViewId) {
+      document.getElementById(view).classList.add('active');
+    } else {
+      document.getElementById(view).classList.remove('active');
+    }
+  });
+}
+
 document.getElementById('tab-editor').addEventListener('click', () => {
-  document.getElementById('tab-editor').classList.add('active');
-  document.getElementById('tab-preview').classList.remove('active');
-  document.getElementById('view-editor').classList.add('active');
-  document.getElementById('view-preview').classList.remove('active');
+  switchTab('tab-editor', 'view-editor');
 });
 
 document.getElementById('tab-preview').addEventListener('click', () => {
-  document.getElementById('tab-preview').classList.add('active');
-  document.getElementById('tab-editor').classList.remove('active');
-  document.getElementById('view-preview').classList.add('active');
-  document.getElementById('view-editor').classList.remove('active');
-  // Re-render when switching to preview just to be safe
+  switchTab('tab-preview', 'view-preview');
   updatePreview();
+});
+
+document.getElementById('tab-about').addEventListener('click', () => {
+  switchTab('tab-about', 'view-about');
+});
+
+document.getElementById('tab-legal').addEventListener('click', () => {
+  switchTab('tab-legal', 'view-legal');
 });
 
 document.getElementById('loadLocalFontsBtn').addEventListener('click', async () => {

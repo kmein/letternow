@@ -147,12 +147,40 @@
       gap: 20px;
     }
     .row > * { flex: 1; }
+
+    .text-content {
+      padding: 40px 20px;
+      max-width: 760px;
+      margin: 0 auto;
+      line-height: 1.6;
+      color: #334155;
+      font-size: 15px;
+    }
+    .text-content h2 {
+      color: #0f172a;
+      margin-top: 0;
+      margin-bottom: 15px;
+    }
+    .text-content h3 {
+      color: #1e293b;
+      margin-top: 30px;
+      margin-bottom: 10px;
+    }
+    .text-content p {
+      margin-bottom: 15px;
+    }
+    .text-content ul {
+      margin-bottom: 20px;
+      padding-left: 20px;
+    }
   </style>
 </head>
 <body>
   <div class="tabs">
     <button class="tab-btn active" id="tab-editor">Editor</button>
     <button class="tab-btn" id="tab-preview">Preview</button>
+    <button class="tab-btn" id="tab-about">About</button>
+    <button class="tab-btn" id="tab-legal">Legal & Privacy</button>
   </div>
   
   <div class="main-container">
@@ -224,6 +252,46 @@ John</textarea>
     <div class="view preview" id="view-preview">
       <div class="preview-container" id="previewContainer">
         <div style="padding: 40px; text-align: center; color: #64748b;">Loading preview...</div>
+      </div>
+    </div>
+
+    <div class="view" id="view-about">
+      <div class="text-content">
+        <h2>About Letternow</h2>
+        
+        <h3>What is this website?</h3>
+        <p>Letternow is a privacy-first web application for generating beautifully typeset letters directly in your browser. By default, it perfectly formats your text into the standard <strong>DIN 5008 Type B</strong> letter layout, widely used for formal and business correspondence in Germany and Europe.</p>
+        
+        <h3>How does it do that?</h3>
+        <p>Under the hood, Letternow is powered by <strong>Typst</strong>, a modern, lightning-fast typesetting system (an alternative to LaTeX). We use a WebAssembly (Wasm) port of the Typst compiler (<code>wasm-typst</code>). This means the entire compilation process—turning your text into an SVG preview and a final PDF—runs entirely locally inside your browser's JavaScript engine.</p>
+        
+        <h3>Why is this cool?</h3>
+        <ul>
+          <li><strong>Blazing Fast:</strong> No network requests mean the document compiles instantly as you type.</li>
+          <li><strong>Offline Capable:</strong> Once the page is loaded, you don't even need an internet connection.</li>
+          <li><strong>Total Privacy:</strong> Your data never leaves your computer.</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="view" id="view-legal">
+      <div class="text-content">
+        <h2>Legal Notice & Privacy Policy</h2>
+        
+        <h3>Privacy by Design</h3>
+        <p>This website was built with absolute privacy in mind. Because the application relies on WebAssembly to process the PDF document directly on your device, <strong>we do not collect, transmit, or store any of the personal information you type into the editor</strong>.</p>
+        
+        <h3>GDPR Compliance</h3>
+        <p>Under the General Data Protection Regulation (GDPR), we act solely as a provider of a static web application. </p>
+        <ul>
+          <li>We do not have a backend server that receives your form inputs.</li>
+          <li>We do not use cookies or tracking scripts.</li>
+          <li>We do not use analytics tools to monitor your behavior.</li>
+          <li>If you load local system fonts, the browser will ask for permission, but those font files remain strictly on your machine.</li>
+        </ul>
+
+        <h3>External Assets</h3>
+        <p>When you load this page, your browser downloads static files (HTML, CSS, JavaScript, WebAssembly, and optional Web Fonts). These are served directly, and standard server access logs (like IP addresses) may be kept temporarily by our hosting provider strictly for security and operational purposes.</p>
       </div>
     </div>
   </div>
