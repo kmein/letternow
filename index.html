@@ -68,9 +68,28 @@
 <body>
   <div class="editor">
     <h2>Letter Info</h2>
-    <input type="text" id="sender" placeholder="Sender Name & Address" value="John Doe\n123 Main St">
-    <input type="text" id="recipient" placeholder="Recipient Name & Address" value="Jane Smith\n456 Elm St">
+    <textarea id="sender" placeholder="Sender Name & Address" rows="3">John Doe
+123 Main St
+12345 Cityville</textarea>
+    <textarea id="recipient" placeholder="Recipient Name & Address" rows="4">Jane Smith
+456 Elm St
+67890 Townsburg</textarea>
+    <input type="text" id="date" placeholder="Date" value="22. May 2026">
     <input type="text" id="subject" placeholder="Subject" value="Important Notice">
+    <div style="display: flex; gap: 10px; align-items: center;">
+      <select id="fontFamily" style="padding: 8px; flex-grow: 1;">
+        <option value="Roboto">Roboto (Default)</option>
+      </select>
+      <button id="loadLocalFontsBtn" style="padding: 8px; font-size: 12px; background: #4b5563;">Load System Fonts</button>
+    </div>
+    <label style="font-size: 14px; display: flex; align-items: center; gap: 5px;">
+      <input type="checkbox" id="foldmarks" checked>
+      Show fold & punch marks
+    </label>
+    <label style="font-size: 14px; display: flex; align-items: center; gap: 5px;">
+      <input type="checkbox" id="pagenumbers">
+      Show page numbers
+    </label>
     <textarea id="body" placeholder="Letter body...">Dear Jane,
 
 This is a test letter to demonstrate the Wasm Typst integration.
