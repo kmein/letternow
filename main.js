@@ -8,7 +8,7 @@ const typstTemplate = `
 #let subject = sys.inputs.at("subject", default: "Important Notice")
 #let foldmarks = sys.inputs.at("foldmarks", default: "true")
 #let pagenumbers = sys.inputs.at("pagenumbers", default: "false")
-#let body = sys.inputs.at("body", default: "Dear Jane,\\n\\nThis is a test letter to demonstrate the Wasm Typst integration.\\n\\nBest,\\nJohn")
+#let body = sys.inputs.at("body", default: "Dear Jane,\n\nThis is a test letter to demonstrate the Wasm Typst integration.\n\nBest, \n\nJohn")
 
 #let font_family = sys.inputs.at("font_family", default: "Roboto")
 
