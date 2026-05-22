@@ -60,7 +60,7 @@ const typstTemplate = `
   #if date != "" {
     date
   } else {
-    datetime.today().display("[day] [month repr:long] [year]")
+    datetime.today().display("[year]-[month]-[day]")
   }
 ]
 
