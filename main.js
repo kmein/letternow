@@ -5,66 +5,80 @@ const typstTemplate = `
 #let sender = sys.inputs.at("sender", default: "Dr. Max Mustermann\\nNormenausschussweg 42\\n10115 Berlin")
 #let recipient = sys.inputs.at("recipient", default: "Behörde für standardisierte Korrespondenz\\nAbteilung für Briefformate und Falztechniken\\nAm Aktenzeichen 1\\n10115 Berlin")
 #let date = sys.inputs.at("date", default: "")
-#let subject = sys.inputs.at("subject", default: "Lobende Erwähnung der korrekten Umsetzung der DIN 5008 (Form A und B)")
+#let subject = sys.inputs.at("subject", default: "Lobende Erwähnung der korrekten Umsetzung der DIN 5008 (Form B)")
 #let foldmarks = sys.inputs.at("foldmarks", default: "true")
 #let pagenumbers = sys.inputs.at("pagenumbers", default: "false")
-#let body = sys.inputs.at("body", default: "Sehr geehrte Damen und Herren,\\n\\nmit großer Freude und außerordentlicher Genugtuung habe ich festgestellt, dass das Layout dieses Schreibens exakt den Vorgaben der *DIN 5008* entspricht. Es ist mir stets ein tiefes inneres Bedürfnis, darauf hinzuweisen, dass die Loch- und Faltmarken auf den Millimeter genau sitzen (27 mm vom oberen Rand, selbstverständlich).\\n\\nIn einer Welt, die zunehmend im typografischen Chaos versinkt, ist die korrekte Positionierung des Anschriftenfeldes ein Fels in der Brandung. Ich möchte hiermit formvollendet beantragen, dass dieses erlesene Stück Software in das Register der vorbildlichsten digitalen Büroanwendungen aufgenommen wird.\\n\\nBitte bestätigen Sie mir den Eingang dieses Schreibens unter Angabe der exakten Zeitzone und in einem fensterlosen Umschlag, der per Einschreiben mit Rückschein versandt wird.\\n\\nMit vorzüglicher Hochachtung\\n\\nDr. Max Mustermann \\\n(Beauftragter für Normen und Standards)")
+#let body = sys.inputs.at("body", default: "Sehr geehrte Damen und Herren,\\n\\nmit großer Freude und außerordentlicher Genugtuung habe ich festgestellt, dass das Layout dieses Schreibens nun exakt den Vorgaben der *DIN 5008 (Form B)* entspricht. Es ist mir stets ein tiefes inneres Bedürfnis, darauf hinzuweisen, dass die Loch- und Faltmarken auf den Millimeter genau sitzen (105 mm und 210 mm vom oberen Rand, selbstverständlich).\\n\\nIn einer Welt, die zunehmend im typografischen Chaos versinkt, ist die korrekte Positionierung des Anschriftenfeldes ein Fels in der Brandung. Ich möchte hiermit formvollendet beantragen, dass dieses erlesene Stück Software in das Register der vorbildlichsten digitalen Büroanwendungen aufgenommen wird.\\n\\nBitte bestätigen Sie mir den Eingang dieses Schreibens unter Angabe der exakten Zeitzone und in einem fensterlosen Umschlag, der per Einschreiben mit Rückschein versandt wird.\\n\\nMit vorzüglicher Hochachtung\\n\\nDr. Max Mustermann \\\n(Beauftragter für Normen und Standards)")
 
 #let font_family = sys.inputs.at("font_family", default: "Roboto")
 
 #set page(
   paper: "a4",
-  margin: (left: 25mm, right: 20mm, top: 27mm, bottom: 20mm),
+  // Standard text area starts at 98.4mm from top for Type B, but we'll use 100mm for safety.
+  // Left margin for body text is 25mm.
+  margin: (left: 25mm, right: 20mm, top: 100mm, bottom: 20mm),
   footer: [
     #if pagenumbers == "true" {
       align(center)[
         #text(size: 9pt)[-- #context counter(page).display() --]
       ]
     }
+  ],
+  background: [
+    // Use the background layer to place absolute elements independent of margins
+    
+    // Fold marks & punch mark (Loch- und Faltmarken) for Type B
+    #if foldmarks == "true" [
+      #place(top + left, dx: 0mm, dy: 105mm)[
+        #line(length: 4mm, stroke: 0.5pt)
+      ]
+      #place(top + left, dx: 0mm, dy: 148.5mm)[
+        #line(length: 6mm, stroke: 0.5pt)
+      ]
+      #place(top + left, dx: 0mm, dy: 210mm)[
+        #line(length: 4mm, stroke: 0.5pt)
+      ]
+    ]
+
+    // Sender Information / Letterhead (Top Right)
+    // Placed typically starting around 27mm from the top.
+    #place(top + right, dx: -20mm, dy: 27mm)[
+      #align(right)[
+        #text(font: font_family, size: 11pt)[#sender]
+      ]
+    ]
+
+    // DIN 5008 Type B Address Window (Anschriftenfeld)
+    // Starts exactly 45mm from the top, 20mm from the left.
+    // 45mm to 62.7mm is the Zusatzzone (return address).
+    #place(top + left, dx: 20mm, dy: 45mm)[
+      #block(width: 85mm, height: 45mm)[
+        // Return address line (Rücksendeangabe), max 8pt
+        #text(font: font_family, size: 8pt)[#underline[#sender.replace("\\n", " · ")]]
+        
+        // Recipient address (Anschrift), starts approx 17.7mm below the top of the window
+        #v(17.7mm - 8pt)
+        #text(font: font_family, size: 11pt)[#recipient]
+      ]
+    ]
+
+    // Date (Datum) / Informationsblock
+    // Placed aligned with the top of the actual recipient address, flush right.
+    #place(top + right, dx: -20mm, dy: 45mm + 17.7mm)[
+      #align(right)[
+        #text(font: font_family, size: 11pt)[#date]
+      ]
+    ]
   ]
 )
+
 #set text(font: font_family, size: 11pt)
 
-// Fold marks & punch mark (Loch- und Faltmarken)
-#if foldmarks == "true" [
-  #place(top + left, dx: -25mm, dy: 87mm - 27mm)[
-    #line(length: 2mm, stroke: 0.5pt)
-  ]
-  #place(top + left, dx: -25mm, dy: 148.5mm - 27mm)[
-    #line(length: 4mm, stroke: 0.5pt)
-  ]
-  #place(top + left, dx: -25mm, dy: 192mm - 27mm)[
-    #line(length: 2mm, stroke: 0.5pt)
-  ]
-]
-
-// Sender information block top right
-#place(top + right)[
-  #align(right)[
-    #sender
-  ]
-]
-
-// DIN 5008 Address Window (Anschriftenfeld)
-#v(18mm)
-// Return address line (Rücksendeangabe)
-#text(size: 8pt)[#underline[#sender.replace("\\n", " · ")]]
-
-#v(5mm)
-// Recipient address
-#recipient
-
-// Date
-#v(15mm)
-#align(right)[
-  #date
-]
-
 // Subject (Betreff)
-#v(10mm)
+// Placed approx two blank lines above the body text.
 #strong(eval(subject, mode: "markup"))
 
-#v(5mm)
+#v(8.4mm)
 // Body
 #eval(body, mode: "markup")
 `;
