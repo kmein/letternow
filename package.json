@@ -1,0 +1,17 @@
+{
+  "name": "letternow",
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build"
+  },
+  "dependencies": {
+    "@brief-jetzt/wasm-typst": "^0.13.1"
+  },
+  "devDependencies": {
+    "vite": "^5.2.0",
+    "vite-plugin-top-level-await": "^1.6.0",
+    "vite-plugin-wasm": "^3.6.0"
+  }
+}
