@@ -133,7 +133,26 @@ document.getElementById('date').addEventListener('input', updatePreview);
 document.getElementById('subject').addEventListener('input', updatePreview);
 document.getElementById('foldmarks').addEventListener('change', updatePreview);
 document.getElementById('pagenumbers').addEventListener('change', updatePreview);
-document.getElementById('fontFamily').addEventListener('change', updatePreview);
+document.getElementById('fontFamily').addEventListener('change', async (e) => {
+  if (window.fontListenerAttached) return; // if local fonts loaded, the other listener handles it
+  
+  const selectedFamily = e.target.value;
+  const bundledMap = {
+    "Roboto": "/Roboto-Regular.ttf",
+    "Open Sans": "/OpenSans-Regular.ttf",
+    "Lora": "/Lora-Regular.ttf",
+    "Merriweather": "/Merriweather-Regular.ttf"
+  };
+  
+  if (bundledMap[selectedFamily]) {
+    if (!bundledFonts[selectedFamily]) {
+      bundledFonts[selectedFamily] = await fetchFont(bundledMap[selectedFamily]);
+    }
+    world.setFonts([FontInput.new(selectedFamily + ".ttf", bundledFonts[selectedFamily])]);
+    updatePreview();
+  }
+});
+
 document.getElementById('body').addEventListener('input', updatePreview);
 
 // Tab switching logic
