@@ -1,0 +1,5 @@
+/dist
+/public
+/.direnv
+/result
+/node_modules
