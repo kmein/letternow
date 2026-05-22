@@ -18,7 +18,7 @@ const typstTemplate = `
   footer: [
     #if pagenumbers == "true" {
       align(center)[
-        #text(size: 9pt)[--- #context counter(page).display() ---]
+        #text(size: 9pt)[-- #context counter(page).display() --]
       ]
     }
   ]
@@ -87,11 +87,11 @@ const defaultVariants = ["Regular", "Bold", "Italic", "BoldItalic"];
 
 async function setup() {
   world = World.new();
-  
+
   // Load all Roboto variants by default
   const fontInputs = [];
   bundledFonts["Roboto"] = {};
-  
+
   for (const variant of defaultVariants) {
     try {
       const data = await fetchFont(`/Roboto-${variant}.ttf`);
@@ -149,7 +149,7 @@ document.getElementById('foldmarks').addEventListener('change', updatePreview);
 document.getElementById('pagenumbers').addEventListener('change', updatePreview);
 document.getElementById('fontFamily').addEventListener('change', async (e) => {
   if (window.fontListenerAttached) return; // if local fonts loaded, the other listener handles it
-  
+
   const selectedFamily = e.target.value;
   const bundledPrefixMap = {
     "Roboto": "/Roboto",
@@ -157,22 +157,22 @@ document.getElementById('fontFamily').addEventListener('change', async (e) => {
     "Lora": "/Lora",
     "Merriweather": "/Merriweather"
   };
-  
+
   const prefix = bundledPrefixMap[selectedFamily];
   if (prefix) {
     if (!bundledFonts[selectedFamily]) {
       bundledFonts[selectedFamily] = {};
     }
-    
+
     const fontInputs = [];
-    
+
     // Always add Roboto fallback first
     if (bundledFonts["Roboto"]) {
       for (const [variant, data] of Object.entries(bundledFonts["Roboto"])) {
         fontInputs.push(FontInput.new(`Roboto-${variant}.ttf`, data));
       }
     }
-    
+
     if (selectedFamily !== "Roboto") {
       for (const variant of defaultVariants) {
         if (!bundledFonts[selectedFamily][variant]) {
@@ -182,14 +182,14 @@ document.getElementById('fontFamily').addEventListener('change', async (e) => {
             console.warn(`Failed to fetch ${selectedFamily} ${variant}`, err);
           }
         }
-        
+
         if (bundledFonts[selectedFamily][variant]) {
            const safeName = selectedFamily.replace(" ", "");
            fontInputs.push(FontInput.new(`${safeName}-${variant}.ttf`, bundledFonts[selectedFamily][variant]));
         }
       }
     }
-    
+
     world.setFonts(fontInputs);
     updatePreview();
   }
@@ -201,7 +201,7 @@ document.getElementById('body').addEventListener('input', updatePreview);
 function switchTab(activeTabId, activeViewId) {
   const tabs = ['tab-editor', 'tab-preview', 'tab-about', 'tab-legal'];
   const views = ['view-editor', 'view-preview', 'view-about', 'view-legal'];
-  
+
   tabs.forEach(tab => {
     if (tab === activeTabId) {
       document.getElementById(tab).classList.add('active');
@@ -209,7 +209,7 @@ function switchTab(activeTabId, activeViewId) {
       document.getElementById(tab).classList.remove('active');
     }
   });
-  
+
   views.forEach(view => {
     if (view === activeViewId) {
       document.getElementById(view).classList.add('active');
@@ -241,14 +241,14 @@ document.getElementById('loadLocalFontsBtn').addEventListener('click', async () 
     alert("Your browser does not support the Local Font Access API (try Chrome/Edge).");
     return;
   }
-  
+
   try {
     const fonts = await window.queryLocalFonts();
     const fontSelect = document.getElementById('fontFamily');
-    
+
     // Clear and keep Roboto
     fontSelect.innerHTML = '<option value="Roboto">Roboto (Default)</option>';
-    
+
     // Group by family
     const familyMap = new Map();
     for (const font of fonts) {
@@ -257,7 +257,7 @@ document.getElementById('loadLocalFontsBtn').addEventListener('click', async () 
       }
       familyMap.get(font.family).push(font);
     }
-    
+
     // Add to dropdown
     const sortedFamilies = Array.from(familyMap.keys()).sort();
     for (const family of sortedFamilies) {
@@ -267,13 +267,13 @@ document.getElementById('loadLocalFontsBtn').addEventListener('click', async () 
       option.textContent = family;
       fontSelect.appendChild(option);
     }
-    
+
     // Store the event listener in a variable so we can avoid duplicating it if the button is clicked twice
     if (!window.fontListenerAttached) {
       fontSelect.addEventListener('change', async (e) => {
         const selectedFamily = e.target.value;
         const fontInputs = [];
-        
+
         // Always add Roboto fallback
         if (bundledFonts["Roboto"]) {
           for (const [variant, data] of Object.entries(bundledFonts["Roboto"])) {
@@ -282,11 +282,11 @@ document.getElementById('loadLocalFontsBtn').addEventListener('click', async () 
         }
 
         if (selectedFamily === "Roboto") {
-          world.setFonts(fontInputs); 
+          world.setFonts(fontInputs);
           updatePreview();
           return;
         }
-        
+
         const familyFonts = familyMap.get(selectedFamily);
         if (familyFonts) {
           for (const localFont of familyFonts) {
@@ -300,14 +300,14 @@ document.getElementById('loadLocalFontsBtn').addEventListener('click', async () 
               console.warn("Failed to load font blob:", err);
             }
           }
-          
+
           world.setFonts(fontInputs);
           updatePreview();
         }
       });
       window.fontListenerAttached = true;
     }
-    
+
     alert("Local fonts loaded! You can now select them from the dropdown.");
   } catch (err) {
     console.error(err);
@@ -339,12 +339,12 @@ document.getElementById('downloadBtn').addEventListener('click', () => {
 
   const blob = new Blob([pdfBytes], { type: 'application/pdf' });
   const url = URL.createObjectURL(blob);
-  
+
   const a = document.createElement('a');
   a.href = url;
   a.download = 'letter.pdf';
   a.click();
-  
+
   URL.revokeObjectURL(url);
 });
 
