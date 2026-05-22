@@ -102,7 +102,8 @@ async function setup() {
     }
   }
 
-  world.setFonts(fontInputs);
+  // Await the font setting to ensure they are available before compiling
+  await world.setFonts(fontInputs);
   updatePreview();
 }
 
@@ -190,7 +191,7 @@ document.getElementById('fontFamily').addEventListener('change', async (e) => {
       }
     }
 
-    world.setFonts(fontInputs);
+    await world.setFonts(fontInputs);
     updatePreview();
   }
 });
@@ -282,7 +283,7 @@ document.getElementById('loadLocalFontsBtn').addEventListener('click', async () 
         }
 
         if (selectedFamily === "Roboto") {
-          world.setFonts(fontInputs);
+          await world.setFonts(fontInputs);
           updatePreview();
           return;
         }
@@ -301,7 +302,7 @@ document.getElementById('loadLocalFontsBtn').addEventListener('click', async () 
             }
           }
 
-          world.setFonts(fontInputs);
+          await world.setFonts(fontInputs);
           updatePreview();
         }
       });
