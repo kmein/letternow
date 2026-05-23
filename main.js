@@ -14,10 +14,10 @@ const typstTemplate = `
 
 #set page(
   paper: "a4",
-  // Standard text area starts at approx 98.4mm from top for Type B.
-  // Left margin (Fluchtlinie) is exactly 25mm.
-  // Right margin is typically 20mm (Deutsche Post minimum is 10mm).
-  margin: (left: 25mm, right: 20mm, top: 100mm, bottom: 20mm),
+// The main text area must start exactly 8.4mm (~2 blank lines) below the address window.
+// The address window ends at 85mm. 
+// So the subject (and body text) should start at 85mm + 8.4mm = 93.4mm from top.
+  margin: (left: 25mm, right: 20mm, top: 93.4mm, bottom: 20mm),
   footer: [
     #if pagenumbers == "true" {
       align(center)[
@@ -92,10 +92,9 @@ const typstTemplate = `
 // Set justified text for the body to match typst-letter-pro standard
 #set par(justify: true)
 
-// The main text area must start two lines below the address window.
-// Address window ends at 90mm. Top margin is 100mm.
-
 // Subject (Betreff)
+// The subject line is placed exactly at the start of the text area (93.4mm),
+// which is 8.4mm below the address window, and it is made bold.
 #pad(right: 10%)[
   #strong(eval(subject, mode: "markup"))
 ]
