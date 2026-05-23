@@ -2,106 +2,41 @@
 import { World, FontInput, SourceInput } from '@brief-jetzt/wasm-typst';
 
 const typstTemplate = `
-#let sender = sys.inputs.at("sender", default: "Dr. Max Mustermann\\nNormenausschussweg 42\\n10115 Berlin")
-#let recipient = sys.inputs.at("recipient", default: "Behörde für standardisierte Korrespondenz\\nAbteilung für Briefformate und Falztechniken\\nAm Aktenzeichen 1\\n10115 Berlin")
+#import "letter-pro.typ": letter-simple
+
+#let sender = sys.inputs.at("sender", default: "Prof. Dr. Ernst Haft\\nInstitut für angewandte Korinthenkackerei\\nHaarspaltergasse 99\\n12345 Pingelheim")
+#let recipient = sys.inputs.at("recipient", default: "Zentralamt für unbürokratische Angelegenheiten\\nAbteilung 4b: Formularvermeidung und spontane Entscheidungen\\nTragische-Ironie-Platz 1\\n98765 Schilda")
 #let date = sys.inputs.at("date", default: "")
-#let subject = sys.inputs.at("subject", default: "Lobende Erwähnung der korrekten Umsetzung der DIN 5008 (Form B)")
+#let subject = sys.inputs.at("subject", default: "Widerspruch gegen die Ablehnung meines Antrags auf Erteilung eines Passierscheins A38")
 #let foldmarks = sys.inputs.at("foldmarks", default: "true")
 #let pagenumbers = sys.inputs.at("pagenumbers", default: "false")
-#let body = sys.inputs.at("body", default: "Sehr geehrte Damen und Herren,\\n\\nmit großer Freude und außerordentlicher Genugtuung habe ich festgestellt, dass das Layout dieses Schreibens nun exakt den Vorgaben der *DIN 5008 (Form B)* entspricht. Es ist mir stets ein tiefes inneres Bedürfnis, darauf hinzuweisen, dass die Loch- und Faltmarken auf den Millimeter genau sitzen (105 mm und 210 mm vom oberen Rand, selbstverständlich).\\n\\nIn einer Welt, die zunehmend im typografischen Chaos versinkt, ist die korrekte Positionierung des Anschriftenfeldes ein Fels in der Brandung. Ich möchte hiermit formvollendet beantragen, dass dieses erlesene Stück Software in das Register der vorbildlichsten digitalen Büroanwendungen aufgenommen wird.\\n\\nBitte bestätigen Sie mir den Eingang dieses Schreibens unter Angabe der exakten Zeitzone und in einem fensterlosen Umschlag, der per Einschreiben mit Rückschein versandt wird.\\n\\nMit vorzüglicher Hochachtung\\n\\n\\n\\nDr. Max Mustermann \\\n(Beauftragter für Normen und Standards)\\n\\n#align(bottom)[*Anlagen*\\n- Zertifikat der Formtreue")
+#let body = sys.inputs.at("body", default: "Sehr geehrte Damen und Herren,\\n\\nhiermit lege ich form- und fristgerecht Widerspruch gegen den Bescheid vom 12. des laufenden Monats ein.\\n\\nDie Begründung, mein Antrag sei \\"zu bürokratisch\\", weise ich mit aller Entschiedenheit zurück. Ich habe das 400-seitige Formular (Anlage 1-73) exakt nach den Vorgaben der DIN 5008 (Form B) ausgefüllt. Wie Sie unschwer erkennen können, sind sogar die Faltmarken dieses Schreibens auf das Nanometer genau kalibriert, um beim Einführen in den Briefumschlag einen optimalen Luftwiderstand zu gewährleisten.\\n\\nZudem möchte ich anmerken, dass Ihr sogenanntes \\"unbürokratisches Vorgehen\\" völlig an den geltenden Richtlinien für die korrekte Abheftung von Schriftgut (Aktenzeichen XY-Ungelöst) vorbeigeht. Ein Lochabstand von 81 statt 80 Millimetern ist für mich nicht nur ein persönlicher Affront, sondern ein klarer Verstoß gegen die guten Sitten der deutschen Locher-Industrie!\\n\\nIch erwarte die umgehende Ausstellung des Passierscheins A38 in dreifacher Ausfertigung, laminiert und notariell beglaubigt.\\n\\nHochachtungsvoll\\n\\n\\n\\nProf. Dr. Ernst Haft\\n\\n#align(bottom)[*Anlagen*\\n- Das besagte 400-seitige Formular\\n- Ein geeichtes Lineal aus dem Jahr 1984]")
 
 #let font_family = sys.inputs.at("font_family", default: "Roboto")
 
-#set page(
-  paper: "a4",
-// The main text area must start exactly 8.4mm (~2 blank lines) below the address window.
-// The address window ends at 85mm. 
-// So the subject (and body text) should start at 85mm + 8.4mm = 93.4mm from top.
-  margin: (left: 25mm, right: 20mm, top: 93.4mm, bottom: 20mm),
-  footer: [
-    #if pagenumbers == "true" {
-      align(center)[
-        #text(size: 9pt)[-- #context counter(page).display() --]
-      ]
-    }
-  ],
-  background: [
-    // Use the background layer to place absolute elements independent of margins
+#let resolved_font = font_family
 
-    // Fold marks & punch mark (Loch- und Faltmarken) for Type B
-    // Per typst-letter-pro and print standards, slightly offset from the exact edge
-    #if foldmarks == "true" [
-      #place(top + left, dx: 5mm, dy: 105mm)[
-        #line(length: 2.5mm, stroke: 0.25pt + black)
-      ]
-      #place(top + left, dx: 5mm, dy: 148.5mm)[
-        #line(length: 4mm, stroke: 0.25pt + black)
-      ]
-      #place(top + left, dx: 5mm, dy: 210mm)[
-        #line(length: 2.5mm, stroke: 0.25pt + black)
-      ]
-    ]
-
-    // Sender Information / Letterhead (Top Right)
-    #place(top + right, dx: -20mm, dy: 27mm)[
-      #align(right)[
-        #text(font: font_family, size: 11pt)[#sender]
-      ]
-    ]
-
-    // DIN 5008 Type B Address Window (Anschriftenfeld)
-    // Starts exactly 45mm from the top.
-    // The text aligns with the "Fluchtlinie" at 25mm from the left edge.
-    // The printable area inside the window is 40mm high and 85mm wide (per Deutsche Post).
-    #place(top + left, dx: 25mm, dy: 45mm)[
-      #block(width: 85mm, height: 40mm)[
-        #grid(
-          columns: 1,
-          // 3 lines Zusatzzone (~12.7mm) + 6 lines Anschrift (~27.3mm) = 40mm
-          rows: (12.7mm, 27.3mm),
-          [
-            // Zusatzzone (return address)
-            #align(bottom)[
-              #pad(bottom: 0.65em)[
-                #text(font: font_family, size: 8pt)[#underline[#sender.replace("\\n", " · ")]]
-              ]
-            ]
-          ],
-          [
-            // Anschriftenzone (recipient)
-            #text(font: font_family, size: 11pt)[#recipient]
-          ]
-        )
-      ]
-    ]
-
-    // Date (Datum) / Informationsblock
-    // According to DIN 5008, the date is often placed flush right on the same line as the destination
-    // or as part of the information block. By placing it at roughly 85mm from top (bottom of the address block),
-    // it appears ~2 lines above the subject (which starts at 100mm).
-    #place(top + right, dx: -20mm, dy: 85mm)[
-      #align(right)[
-        #text(font: font_family, size: 11pt)[#date]
-      ]
-    ]
-  ]
-)
-
-#set text(font: font_family, size: 11pt)
-
-// Set justified text for the body to match typst-letter-pro standard
+#set text(font: resolved_font, size: 11pt, lang: "de")
 #set par(justify: true)
 
-// Subject (Betreff)
-// The subject line is placed exactly at the start of the text area (93.4mm),
-// which is 8.4mm below the address window, and it is made bold.
-#pad(right: 10%)[
-  #strong(eval(subject, mode: "markup"))
-]
+#let senderLines = sender.split("\\n")
+#let senderName = senderLines.first()
+#let senderAddress = senderLines.slice(1).join(", ")
 
-// The salutation follows with two blank lines spacing to the subject line.
-#v(8.46mm)
-// Body (contains salutation, text, greeting, signature, enclosures)
+#show: letter-simple.with(
+  font: font_family,
+  sender: (
+    name: senderName,
+    address: senderAddress,
+  ),
+  recipient: recipient,
+  date: if date != "" { date } else { none },
+  subject: if subject != "" { eval(subject, mode: "markup") } else { none },
+  folding-marks: foldmarks == "true",
+  hole-mark: foldmarks == "true",
+  page-numbering: if pagenumbers == "true" { "-- 1 --" } else { none },
+)
+
 #eval(body, mode: "markup")
 `;
 
@@ -114,11 +49,27 @@ async function fetchFont(url) {
 let world = null;
 let robotoFonts = {};
 let bundledFonts = {};
+let letterProData = "";
 
 const defaultVariants = ["Regular", "Bold", "Italic", "BoldItalic"];
 
 async function setup() {
   world = World.new();
+
+  try {
+    const letterProRes = await fetch(import.meta.env.BASE_URL + `typst/letter-pro.typ`);
+    if (!letterProRes.ok) throw new Error("Failed to fetch letter-pro.typ");
+    letterProData = await letterProRes.text();
+    // Validate it's not the HTML fallback
+    if (letterProData.trim().startsWith("<!DOCTYPE")) {
+      console.error("letter-pro.typ fetch returned HTML. Please restart Vite dev server.");
+      letterProData = ""; // empty
+    } else {
+      console.log(`Loaded letter-pro.typ, length: ${letterProData.length}`);
+    }
+  } catch (e) {
+    console.error("Error fetching letter-pro.typ:", e);
+  }
 
   // Load all Roboto variants by default
   const fontInputs = [];
@@ -136,7 +87,17 @@ async function setup() {
 
   // Await the font setting to ensure they are available before compiling
   await world.setFonts(fontInputs);
-  updatePreview();
+
+  // We will set Sources dynamically on each compile because main.typ changes,
+  // but wait, is setSourcesAndFiles stateful?
+
+  const currentFont = document.getElementById('fontFamily').value;
+  if (currentFont !== "Roboto") {
+     const event = new Event('change');
+     document.getElementById('fontFamily').dispatchEvent(event);
+  } else {
+    updatePreview();
+  }
 }
 
 function updatePreview() {
@@ -150,14 +111,17 @@ function updatePreview() {
   if (date === "") {
     date = new Date().toISOString().split('T')[0];
   }
+
   const subject = document.getElementById('subject').value;
   const foldmarks = document.getElementById('foldmarks').checked ? "true" : "false";
   const pagenumbers = document.getElementById('pagenumbers').checked ? "true" : "false";
-  const fontFamily = document.getElementById('fontFamily').value;
+  // Trim the font family name to prevent parsing issues
+  const fontFamily = document.getElementById('fontFamily').value.trim();
   const body = document.getElementById('body').value;
 
   const source = SourceInput.new("main.typ", typstTemplate);
-  world.setSourcesAndFiles([source], []);
+  const letterProSource = SourceInput.new("letter-pro.typ", letterProData);
+  world.setSourcesAndFiles([source, letterProSource], []);
 
   const inputs = {
     sender,
@@ -222,8 +186,7 @@ document.getElementById('fontFamily').addEventListener('change', async (e) => {
         }
 
         if (bundledFonts[selectedFamily][variant]) {
-           const safeName = selectedFamily.replace(" ", "");
-           fontInputs.push(FontInput.new(`${safeName}-${variant}.ttf`, bundledFonts[selectedFamily][variant]));
+           fontInputs.push(FontInput.new(`${prefix}-${variant}.ttf`, bundledFonts[selectedFamily][variant]));
         }
       }
     }
@@ -365,13 +328,25 @@ document.getElementById('downloadBtn').addEventListener('click', () => {
   const subject = document.getElementById('subject').value;
   const foldmarks = document.getElementById('foldmarks').checked ? "true" : "false";
   const pagenumbers = document.getElementById('pagenumbers').checked ? "true" : "false";
-  const fontFamily = document.getElementById('fontFamily').value;
+  // Trim the font family name to prevent parsing issues
+  const fontFamily = document.getElementById('fontFamily').value.trim();
   const body = document.getElementById('body').value;
 
   const source = SourceInput.new("main.typ", typstTemplate);
-  world.setSourcesAndFiles([source], []);
+  const letterProSource = SourceInput.new("letter-pro.typ", letterProData);
+  world.setSourcesAndFiles([source, letterProSource], []);
 
-  const inputs = { sender, recipient, date, subject, foldmarks, pagenumbers, font_family: fontFamily, body };
+  // Format string correctly for typst evaluation
+  const inputs = {
+    sender,
+    recipient,
+    date,
+    subject,
+    foldmarks,
+    pagenumbers,
+    font_family: fontFamily,
+    body
+  };
   const compileLog = world.compile(inputs);
   if (compileLog) console.log("Compile log:", compileLog);
 
