@@ -13,7 +13,7 @@
       margin: 0;
       background: #f4f4f5;
     }
-    
+
     .tabs {
       display: flex;
       background: #1e293b;
@@ -21,7 +21,7 @@
       gap: 5px;
       align-items: center;
     }
-    
+
     .logo {
       color: white;
       font-weight: bold;
@@ -83,9 +83,9 @@
       flex-direction: column;
       gap: 15px;
     }
-    
+
     .editor h2 { margin-top: 0; }
-    
+
     .editor input, .editor textarea {
       padding: 12px;
       font-size: 14px;
@@ -94,11 +94,11 @@
       width: 100%;
       box-sizing: border-box;
     }
-    
+
     .editor textarea {
       resize: vertical;
     }
-    
+
     .editor #body {
       min-height: 250px;
     }
@@ -123,14 +123,14 @@
       height: auto;
       display: block;
     }
-    
+
     .download-wrapper {
       position: fixed;
       bottom: 20px;
       right: 20px;
       z-index: 100;
     }
-    
+
     button.primary {
       padding: 12px 24px;
       background: #2563eb;
@@ -146,7 +146,7 @@
       background: #1d4ed8;
       box-shadow: 0 6px 8px -1px rgba(37,99,235,0.3);
     }
-    
+
     .input-group {
       display: flex;
       flex-direction: column;
@@ -157,7 +157,7 @@
       font-weight: 600;
       color: #475569;
     }
-    
+
     .row {
       display: flex;
       gap: 20px;
@@ -210,11 +210,11 @@
     <button class="tab-btn" id="tab-about">About</button>
     <button class="tab-btn" id="tab-legal">Legal & Privacy</button>
   </div>
-  
+
   <div class="main-container">
     <div class="view editor active" id="view-editor">
       <h2>Letter Details</h2>
-      
+
       <div class="row">
         <div class="input-group">
           <label class="header">Sender</label>
@@ -222,13 +222,13 @@
 Haarspaltergasse 99
 12345 Pingelheim</textarea>
         </div>
-        
+
         <div class="input-group">
           <label class="header">Recipient</label>
           <textarea id="recipient" placeholder="Erika Mustermann&#10;Musterweg 1&#10;54321 Musterdorf" rows="3">Behörde für Formularwesen
 Abteilung Passierscheine
 Endlosschleife 42
-12345 Schilda</textarea>
+54321 Schilda</textarea>
         </div>
       </div>
 
@@ -242,7 +242,7 @@ Endlosschleife 42
           <input type="text" id="subject" placeholder="Letter Subject" value="Widerspruch gegen die Ablehnung meines Antrags auf Erteilung eines Passierscheins A38">
         </div>
       </div>
-      
+
       <div class="input-group">
         <label class="header">Typography</label>
         <div style="display: flex; gap: 10px; align-items: center;">
@@ -266,7 +266,7 @@ Endlosschleife 42
           Show page numbers
         </label>
       </div>
-      
+
       <div class="input-group">
         <label class="header">Message Body (Typst Markup)</label>
         <textarea id="body" placeholder="Write your letter here...">Sehr geehrte Damen und Herren,
@@ -290,7 +290,7 @@ Prof. Dr. Ernst Haft
 - Ein geeichtes Lineal aus dem Jahr 1984]</textarea>
       </div>
     </div>
-    
+
     <div class="view preview" id="view-preview">
       <div class="preview-container" id="previewContainer">
         <div style="padding: 40px; text-align: center; color: #64748b;">Loading preview...</div>
@@ -300,15 +300,15 @@ Prof. Dr. Ernst Haft
     <div class="view" id="view-about">
       <div class="text-content">
         <h2>About LetterNow</h2>
-        
+
         <h3>What is this website?</h3>
         <p>LetterNow is a privacy-first web application for generating beautifully typeset letters directly in your browser. By default, it perfectly formats your text into the standard <strong>DIN 5008 Type B</strong> letter layout, widely used for formal and business correspondence in Germany and Europe.</p>
-        
+
         <h3>How does it do that?</h3>
         <p><strong>The fastest way to write a formal letter.</strong></p>
         <p>Under the hood, LetterNow is inspired by the amazing <a href="https://brief.jetzt" target="_blank" style="color: #2563eb; text-decoration: none;">brief.jetzt</a>. It is powered by <strong>Typst</strong>, a modern, lightning-fast typesetting system (an alternative to LaTeX). We use a WebAssembly (Wasm) port of the Typst compiler (<a href="https://github.com/brief-jetzt/wasm-typst" target="_blank" style="color: #2563eb; text-decoration: none;">wasm-typst</a>) and the excellent <a href="https://typst.app/universe/package/letter-pro/" target="_blank" style="color: #2563eb; text-decoration: none;">letter-pro</a> package. This means the entire compilation process—turning your text into an SVG preview and a final PDF—runs entirely locally inside your browser's JavaScript engine.</p>
         <p>For Typst syntax reference, see the <a href="https://typst.app/docs/" target="_blank" style="color: #2563eb; text-decoration: none;">Typst documentation</a>.</p>
-        
+
         <h3>Why is this cool?</h3>
         <ul>
           <li><strong>Blazing Fast:</strong> No network requests mean the document compiles instantly as you type.</li>
@@ -321,10 +321,10 @@ Prof. Dr. Ernst Haft
     <div class="view" id="view-legal">
       <div class="text-content">
         <h2>Legal Notice & Privacy Policy</h2>
-        
+
         <h3>Privacy by Design</h3>
         <p>This website was built with absolute privacy in mind. Because the application relies on WebAssembly to process the PDF document directly on your device, <strong>we do not collect, transmit, or store any of the personal information you type into the editor</strong>.</p>
-        
+
         <h3>GDPR Compliance</h3>
         <p>Under the General Data Protection Regulation (GDPR), we act solely as a provider of a static web application. </p>
         <ul>

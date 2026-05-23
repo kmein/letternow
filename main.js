@@ -5,7 +5,7 @@ const typstTemplate = `
 #import "letter-pro.typ": letter-simple
 
 #let sender = sys.inputs.at("sender", default: "Prof. Dr. Ernst Haft\\nHaarspaltergasse 99\\n12345 Pingelheim")
-#let recipient = sys.inputs.at("recipient", default: "Behörde für Formularwesen\\nAbteilung Passierscheine\\nEndlosschleife 42\\n12345 Schilda")
+#let recipient = sys.inputs.at("recipient", default: "Behörde für Formularwesen\\nAbteilung Passierscheine\\nEndlosschleife 42\\n54321 Schilda")
 #let date = sys.inputs.at("date", default: "")
 #let subject = sys.inputs.at("subject", default: "Widerspruch gegen die Ablehnung meines Antrags auf Erteilung eines Passierscheins A38")
 #let foldmarks = sys.inputs.at("foldmarks", default: "true")
