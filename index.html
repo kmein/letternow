@@ -1,0 +1,422 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="icon" type="image/svg+xml" href="./assets/favicon-Cg1g4vkz.svg" />
+  <title>LetterNow - The fastest way to write a formal letter.</title>
+  <style>
+    body {
+      font-family: system-ui, sans-serif;
+      display: flex;
+      flex-direction: column;
+      height: 100vh;
+      margin: 0;
+      background: #f4f4f5;
+    }
+
+    .tabs {
+      display: flex;
+      background: #1e293b;
+      padding: 10px 10px 0 10px;
+      gap: 5px;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+
+    .logo {
+      color: white;
+      font-weight: bold;
+      font-size: 18px;
+      margin-right: auto;
+      margin-left: 10px;
+      margin-bottom: 5px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      width: 100%;
+    }
+    .logo svg {
+      width: 24px;
+      height: 24px;
+    }
+    .tab-btn {
+      background: #334155;
+      color: #94a3b8;
+      border: none;
+      padding: 10px 12px;
+      border-radius: 8px 8px 0 0;
+      cursor: pointer;
+      font-size: 14px;
+      font-weight: 500;
+      flex-grow: 1;
+      text-align: center;
+      white-space: nowrap;
+    }
+    @media (min-width: 600px) {
+      .tabs {
+        flex-wrap: nowrap;
+        padding: 10px 20px 0 20px;
+      }
+      .logo {
+        font-size: 20px;
+        margin-right: 20px;
+        margin-left: 0;
+        margin-bottom: 0;
+        width: auto;
+      }
+      .tab-btn {
+        padding: 12px 24px;
+        font-size: 16px;
+        flex-grow: 0;
+      }
+    }
+    .tab-btn.active {
+      background: white;
+      color: #0f172a;
+    }
+    .tab-btn:hover:not(.active) {
+      background: #475569;
+      color: white;
+    }
+
+    .main-container {
+      display: flex;
+      flex-grow: 1;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .view {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: white;
+      display: none;
+      overflow-y: auto;
+    }
+    .view.active {
+      display: flex;
+    }
+
+    .editor {
+      width: 100%;
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 20px;
+      flex-direction: column;
+      gap: 15px;
+      box-sizing: border-box;
+    }
+
+    .editor h2 { margin-top: 0; }
+
+    .editor input, .editor textarea {
+      padding: 12px;
+      font-size: 14px;
+      border: 1px solid #cbd5e1;
+      border-radius: 6px;
+      width: 100%;
+      box-sizing: border-box;
+    }
+
+    .editor textarea {
+      resize: vertical;
+    }
+
+    .editor #body {
+      min-height: 250px;
+    }
+
+    .preview {
+      width: 100%;
+      padding: 10px;
+      flex-direction: column;
+      align-items: center;
+      background: #f1f5f9;
+      box-sizing: border-box;
+    }
+    @media (min-width: 600px) {
+      .preview {
+        padding: 20px;
+      }
+    }
+    .preview-container {
+      background: white;
+      box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1);
+      padding: 0;
+      width: 100%;
+      max-width: 210mm; /* A4 width */
+      aspect-ratio: 210 / 297; /* A4 aspect ratio */
+      min-height: auto;
+    }
+    @media (min-width: 210mm) {
+      .preview-container {
+        min-height: 297mm;
+      }
+    }
+    .preview-container svg {
+      width: 100%;
+      height: auto;
+      display: block;
+    }
+
+    .download-wrapper {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      z-index: 100;
+    }
+
+    button.primary {
+      padding: 12px 20px;
+      background: #2563eb;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 14px;
+      font-weight: bold;
+      box-shadow: 0 4px 6px -1px rgba(37,99,235,0.2);
+    }
+    @media (min-width: 600px) {
+      button.primary {
+        padding: 12px 24px;
+        font-size: 16px;
+      }
+    }
+    button.primary:hover {
+      background: #1d4ed8;
+      box-shadow: 0 6px 8px -1px rgba(37,99,235,0.3);
+    }
+
+    .input-group {
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+    }
+    .input-group label.header {
+      font-size: 13px;
+      font-weight: 600;
+      color: #475569;
+    }
+
+    .row {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+    @media (min-width: 600px) {
+      .row {
+        flex-direction: row;
+      }
+    }
+    .row > * { flex: 1; }
+
+    .text-content {
+      padding: 20px;
+      max-width: 760px;
+      margin: 0 auto;
+      line-height: 1.6;
+      color: #334155;
+      font-size: 15px;
+    }
+    @media (min-width: 600px) {
+      .text-content {
+        padding: 40px 20px;
+      }
+    }
+    .text-content h2 {
+      color: #0f172a;
+      margin-top: 0;
+      margin-bottom: 15px;
+    }
+    .text-content h3 {
+      color: #1e293b;
+      margin-top: 30px;
+      margin-bottom: 10px;
+    }
+    .text-content p {
+      margin-bottom: 15px;
+    }
+    .text-content ul {
+      margin-bottom: 20px;
+      padding-left: 20px;
+    }
+  </style>
+  <script type="module" crossorigin src="./assets/index-B66syS6K.js"></script>
+</head>
+<body>
+  <div class="tabs">
+    <div class="logo">
+      <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+        <!-- Paper outline -->
+        <rect x="6" y="2" width="14" height="20" rx="1" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></rect>
+        <!-- Fold marks on the left -->
+        <path d="M2 8h4 M1 12h5 M2 16h4" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+        <!-- Ultra minimal text layout: just address and body -->
+        <rect x="8" y="8" width="5" height="2" fill="currentColor" stroke="none"></rect>
+        <rect x="8" y="13" width="8" height="5" fill="currentColor" stroke="none"></rect>
+      </svg>
+      LetterNow
+    </div>
+    <button class="tab-btn active" id="tab-editor">Editor</button>
+    <button class="tab-btn" id="tab-preview">Preview</button>
+    <button class="tab-btn" id="tab-about">About</button>
+    <button class="tab-btn" id="tab-legal">Legal</button>
+  </div>
+
+  <div class="main-container">
+    <div class="view editor active" id="view-editor">
+      <h2>Letter Details</h2>
+
+      <div class="row">
+        <div class="input-group">
+          <label class="header">Sender</label>
+          <textarea id="sender" placeholder="Max Mustermann&#10;Musterstraße 42&#10;12345 Musterstadt" rows="3">Prof. Dr. Ernst Haft
+Haarspaltergasse 99
+12345 Pingelheim</textarea>
+        </div>
+
+        <div class="input-group">
+          <label class="header">Recipient</label>
+          <textarea id="recipient" placeholder="Erika Mustermann&#10;Musterweg 1&#10;54321 Musterdorf" rows="3">Behörde für Formularwesen
+Abteilung Passierscheine
+Endlosschleife 42
+54321 Schilda</textarea>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="input-group">
+          <label class="header">Date</label>
+          <input type="text" id="date" placeholder="Leave empty for today" value="">
+        </div>
+        <div class="input-group">
+          <label class="header">Subject</label>
+          <input type="text" id="subject" placeholder="Letter Subject" value="Widerspruch gegen die Ablehnung meines Antrags auf Erteilung eines Passierscheins A38">
+        </div>
+      </div>
+
+      <div class="input-group">
+        <label class="header">Typography</label>
+        <div style="display: flex; gap: 10px; align-items: center; flex-wrap: wrap;">
+          <select id="fontFamily" style="padding: 10px; flex-grow: 1; border: 1px solid #cbd5e1; border-radius: 6px; min-width: 150px;">
+            <option value="Roboto">Roboto</option>
+            <option value="Open Sans">Open Sans</option>
+            <option value="Lora">Lora</option>
+            <option value="Merriweather">Merriweather</option>
+          </select>
+          <button id="loadLocalFontsBtn" style="padding: 10px 15px; font-size: 14px; background: #475569; color: white; border: none; border-radius: 6px; cursor: pointer; flex-grow: 1;">Load System Fonts</button>
+        </div>
+      </div>
+
+      <div class="row" style="padding: 10px 0;">
+        <label style="font-size: 14px; display: flex; align-items: center; gap: 8px; cursor: pointer;">
+          <input type="checkbox" id="foldmarks" checked>
+          Show fold & punch marks
+        </label>
+        <label style="font-size: 14px; display: flex; align-items: center; gap: 8px; cursor: pointer;">
+          <input type="checkbox" id="pagenumbers">
+          Show page numbers
+        </label>
+      </div>
+
+      <div class="input-group">
+        <label class="header">Message Body (Typst Markup)</label>
+        <textarea id="body" placeholder="Write your letter here...">Sehr geehrte Damen und Herren,
+
+hiermit lege ich form- und fristgerecht Widerspruch gegen den Bescheid vom 12. des laufenden Monats ein.
+
+Die Begründung, mein Antrag sei "zu bürokratisch", weise ich mit aller Entschiedenheit zurück. Ich habe das 400-seitige Formular (Anlage 1-73) exakt nach den Vorgaben der DIN 5008 (Form B) ausgefüllt. Wie Sie unschwer erkennen können, sind sogar die Faltmarken dieses Schreibens auf das Nanometer genau kalibriert, um beim Einführen in den Briefumschlag einen optimalen Luftwiderstand zu gewährleisten.
+
+Zudem möchte ich anmerken, dass Ihr sogenanntes "unbürokratisches Vorgehen" völlig an den geltenden Richtlinien für die korrekte Abheftung von Schriftgut (Aktenzeichen XY-Ungelöst) vorbeigeht. Ein Lochabstand von 81 statt 80 Millimetern ist für mich nicht nur ein persönlicher Affront, sondern ein klarer Verstoß gegen die guten Sitten der deutschen Locher-Industrie!
+
+Ich erwarte die umgehende Ausstellung des Passierscheins A38 in dreifacher Ausfertigung, laminiert und notariell beglaubigt.
+
+Hochachtungsvoll
+
+
+
+Prof. Dr. Ernst Haft
+
+#align(bottom)[*Anlagen*
+- Das besagte 400-seitige Formular
+- Ein geeichtes Lineal aus dem Jahr 1984]</textarea>
+      </div>
+    </div>
+
+    <div class="view preview" id="view-preview">
+      <style>
+        @keyframes spin {
+          from { transform: rotate(0deg); }
+          to { transform: rotate(360deg); }
+        }
+        .opacity-25 { opacity: 0.25; }
+        .opacity-75 { opacity: 0.75; }
+      </style>
+      <div class="preview-container" id="previewContainer">
+        <div style="padding: 40px; text-align: center; color: #64748b; display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100%; min-height: 200px;">
+          <svg style="width: 32px; height: 32px; animation: spin 1s linear infinite; margin-bottom: 10px;" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+          </svg>
+          Loading preview...
+        </div>
+      </div>
+    </div>
+
+    <div class="view" id="view-about">
+      <div class="text-content">
+        <h2>About LetterNow</h2>
+
+        <h3>What is this website?</h3>
+        <p>LetterNow is a privacy-first web application for generating beautifully typeset letters directly in your browser. By default, it perfectly formats your text into the standard <strong>DIN 5008 Type B</strong> letter layout, widely used for formal and business correspondence in Germany and Europe.</p>
+
+        <h3>How does it do that?</h3>
+        <p><strong>The fastest way to write a formal letter.</strong></p>
+        <p>Under the hood, LetterNow is inspired by the amazing <a href="https://brief.jetzt" target="_blank" style="color: #2563eb; text-decoration: none;">brief.jetzt</a>. It is powered by <strong>Typst</strong>, a modern, lightning-fast typesetting system (an alternative to LaTeX). We use a WebAssembly (Wasm) port of the Typst compiler (<a href="https://github.com/brief-jetzt/wasm-typst" target="_blank" style="color: #2563eb; text-decoration: none;">wasm-typst</a>) and the excellent <a href="https://typst.app/universe/package/letter-pro/" target="_blank" style="color: #2563eb; text-decoration: none;">letter-pro</a> package. This means the entire compilation process—turning your text into an SVG preview and a final PDF—runs entirely locally inside your browser's JavaScript engine.</p>
+        <p>For Typst syntax reference, see the <a href="https://typst.app/docs/" target="_blank" style="color: #2563eb; text-decoration: none;">Typst documentation</a>.</p>
+
+        <h3>Why is this cool?</h3>
+        <ul>
+          <li><strong>Blazing Fast:</strong> No network requests mean the document compiles instantly as you type.</li>
+          <li><strong>Offline Capable:</strong> Once the page is loaded, you don't even need an internet connection.</li>
+          <li><strong>Total Privacy:</strong> Your data never leaves your computer.</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="view" id="view-legal">
+      <div class="text-content">
+        <h2>Legal Notice & Privacy Policy</h2>
+
+        <h3>Privacy by Design</h3>
+        <p>This website was built with absolute privacy in mind. Because the application relies on WebAssembly to process the PDF document directly on your device, <strong>we do not collect, transmit, or store any of the personal information you type into the editor</strong>.</p>
+
+        <h3>GDPR Compliance</h3>
+        <p>Under the General Data Protection Regulation (GDPR), we act solely as a provider of a static web application. </p>
+        <ul>
+          <li>We do not have a backend server that receives your form inputs.</li>
+          <li>We do not use cookies or tracking scripts.</li>
+          <li>We do not use analytics tools to monitor your behavior.</li>
+          <li>If you load local system fonts, the browser will ask for permission, but those font files remain strictly on your machine.</li>
+        </ul>
+
+        <h3>External Assets</h3>
+        <p>When you load this page, your browser downloads static files (HTML, CSS, JavaScript, WebAssembly, and optional Web Fonts). These are served directly, and standard server access logs (like IP addresses) may be kept temporarily by our hosting provider strictly for security and operational purposes.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="download-wrapper">
+    <button class="primary" id="downloadBtn">
+      <svg style="width: 18px; height: 18px; vertical-align: -3px; margin-right: 5px;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
+      Download PDF
+    </button>
+  </div>
+
+</body>
+</html>
