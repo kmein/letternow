@@ -245,6 +245,13 @@ function switchTab(activeTabId, activeViewId) {
       document.getElementById(view).classList.remove('active');
     }
   });
+
+  const downloadBtn = document.querySelector('.download-wrapper');
+  if (activeViewId === 'view-editor' || activeViewId === 'view-preview') {
+    downloadBtn.style.display = 'block';
+  } else {
+    downloadBtn.style.display = 'none';
+  }
 }
 
 document.getElementById('tab-editor').addEventListener('click', () => {
