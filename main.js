@@ -140,15 +140,35 @@ function updatePreview() {
   }
 
   const svg = world.render_svg();
-  document.getElementById('previewContainer').innerHTML = svg;
+  const previewContainer = document.getElementById('previewContainer');
+  previewContainer.innerHTML = svg;
+  previewContainer.classList.remove('loading');
 }
 
-document.getElementById('sender').addEventListener('input', updatePreview);
-document.getElementById('recipient').addEventListener('input', updatePreview);
-document.getElementById('date').addEventListener('input', updatePreview);
-document.getElementById('subject').addEventListener('input', updatePreview);
-document.getElementById('foldmarks').addEventListener('change', updatePreview);
-document.getElementById('pagenumbers').addEventListener('change', updatePreview);
+function showLoadingIndicator() {
+  const previewContainer = document.getElementById('previewContainer');
+  if (!previewContainer.classList.contains('loading')) {
+    previewContainer.classList.add('loading');
+    previewContainer.innerHTML = '<div style="padding: 40px; text-align: center; color: #64748b; display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100%; min-height: 200px;"><svg style="width: 32px; height: 32px; animation: spin 1s linear infinite; margin-bottom: 10px;" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" opacity="0.25"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" opacity="0.75"></path></svg>Updating preview...</div>';
+  }
+}
+
+let previewTimeout;
+
+function updatePreviewDebounced() {
+  showLoadingIndicator();
+  clearTimeout(previewTimeout);
+  previewTimeout = setTimeout(() => {
+    updatePreview();
+  }, 250); // 250ms debounce
+}
+
+document.getElementById('sender').addEventListener('input', updatePreviewDebounced);
+document.getElementById('recipient').addEventListener('input', updatePreviewDebounced);
+document.getElementById('date').addEventListener('input', updatePreviewDebounced);
+document.getElementById('subject').addEventListener('input', updatePreviewDebounced);
+document.getElementById('foldmarks').addEventListener('change', updatePreviewDebounced);
+document.getElementById('pagenumbers').addEventListener('change', updatePreviewDebounced);
 document.getElementById('fontFamily').addEventListener('change', async (e) => {
   if (window.fontListenerAttached) return; // if local fonts loaded, the other listener handles it
 
@@ -196,7 +216,7 @@ document.getElementById('fontFamily').addEventListener('change', async (e) => {
   }
 });
 
-document.getElementById('body').addEventListener('input', updatePreview);
+document.getElementById('body').addEventListener('input', updatePreviewDebounced);
 
 // Tab switching logic
 function switchTab(activeTabId, activeViewId) {
