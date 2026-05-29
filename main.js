@@ -69,12 +69,14 @@ async function setup() {
     }
   } catch (e) {
     console.error("Error fetching letter-pro.typ:", e);
+    document.getElementById('previewContainer').innerHTML = '<div style="padding: 40px; text-align: center; color: #ef4444;">Failed to load letter template. Please check your connection.</div>';
   }
 
   // Load all Roboto variants by default
   const fontInputs = [];
   bundledFonts["Roboto"] = {};
 
+  let fontError = false;
   for (const variant of defaultVariants) {
     try {
       const data = await fetchFont(import.meta.env.BASE_URL + `fonts/Roboto-${variant}.ttf`);
@@ -82,7 +84,12 @@ async function setup() {
       fontInputs.push(FontInput.new(`Roboto-${variant}.ttf`, data));
     } catch (e) {
       console.warn(`Could not load Roboto ${variant}`, e);
+      fontError = true;
     }
+  }
+
+  if (fontError) {
+    document.getElementById('previewContainer').innerHTML = '<div style="padding: 40px; text-align: center; color: #ef4444;">Failed to load some default fonts. Please check your connection.</div>';
   }
 
   // Await the font setting to ensure they are available before compiling
