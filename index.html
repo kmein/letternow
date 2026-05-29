@@ -2,6 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="icon" type="image/svg+xml" href="/src/assets/favicon.svg" />
   <title>LetterNow - The fastest way to write a formal letter.</title>
   <style>
@@ -17,19 +18,23 @@
     .tabs {
       display: flex;
       background: #1e293b;
-      padding: 10px 20px 0 20px;
+      padding: 10px 10px 0 10px;
       gap: 5px;
       align-items: center;
+      flex-wrap: wrap;
     }
 
     .logo {
       color: white;
       font-weight: bold;
-      font-size: 20px;
-      margin-right: 20px;
+      font-size: 18px;
+      margin-right: auto;
+      margin-left: 10px;
+      margin-bottom: 5px;
       display: flex;
       align-items: center;
       gap: 8px;
+      width: 100%;
     }
     .logo svg {
       width: 24px;
@@ -39,11 +44,32 @@
       background: #334155;
       color: #94a3b8;
       border: none;
-      padding: 12px 24px;
+      padding: 10px 12px;
       border-radius: 8px 8px 0 0;
       cursor: pointer;
-      font-size: 16px;
+      font-size: 14px;
       font-weight: 500;
+      flex-grow: 1;
+      text-align: center;
+      white-space: nowrap;
+    }
+    @media (min-width: 600px) {
+      .tabs {
+        flex-wrap: nowrap;
+        padding: 10px 20px 0 20px;
+      }
+      .logo {
+        font-size: 20px;
+        margin-right: 20px;
+        margin-left: 0;
+        margin-bottom: 0;
+        width: auto;
+      }
+      .tab-btn {
+        padding: 12px 24px;
+        font-size: 16px;
+        flex-grow: 0;
+      }
     }
     .tab-btn.active {
       background: white;
@@ -82,6 +108,7 @@
       padding: 20px;
       flex-direction: column;
       gap: 15px;
+      box-sizing: border-box;
     }
 
     .editor h2 { margin-top: 0; }
@@ -105,10 +132,16 @@
 
     .preview {
       width: 100%;
-      padding: 20px;
+      padding: 10px;
       flex-direction: column;
       align-items: center;
       background: #f1f5f9;
+      box-sizing: border-box;
+    }
+    @media (min-width: 600px) {
+      .preview {
+        padding: 20px;
+      }
     }
     .preview-container {
       background: white;
@@ -116,7 +149,13 @@
       padding: 0;
       width: 100%;
       max-width: 210mm; /* A4 width */
-      min-height: 297mm; /* A4 height */
+      aspect-ratio: 210 / 297; /* A4 aspect ratio */
+      min-height: auto;
+    }
+    @media (min-width: 210mm) {
+      .preview-container {
+        min-height: 297mm;
+      }
     }
     .preview-container svg {
       width: 100%;
@@ -132,15 +171,21 @@
     }
 
     button.primary {
-      padding: 12px 24px;
+      padding: 12px 20px;
       background: #2563eb;
       color: white;
       border: none;
       border-radius: 8px;
       cursor: pointer;
-      font-size: 16px;
+      font-size: 14px;
       font-weight: bold;
       box-shadow: 0 4px 6px -1px rgba(37,99,235,0.2);
+    }
+    @media (min-width: 600px) {
+      button.primary {
+        padding: 12px 24px;
+        font-size: 16px;
+      }
     }
     button.primary:hover {
       background: #1d4ed8;
@@ -160,17 +205,28 @@
 
     .row {
       display: flex;
+      flex-direction: column;
       gap: 20px;
+    }
+    @media (min-width: 600px) {
+      .row {
+        flex-direction: row;
+      }
     }
     .row > * { flex: 1; }
 
     .text-content {
-      padding: 40px 20px;
+      padding: 20px;
       max-width: 760px;
       margin: 0 auto;
       line-height: 1.6;
       color: #334155;
       font-size: 15px;
+    }
+    @media (min-width: 600px) {
+      .text-content {
+        padding: 40px 20px;
+      }
     }
     .text-content h2 {
       color: #0f172a;
@@ -208,7 +264,7 @@
     <button class="tab-btn active" id="tab-editor">Editor</button>
     <button class="tab-btn" id="tab-preview">Preview</button>
     <button class="tab-btn" id="tab-about">About</button>
-    <button class="tab-btn" id="tab-legal">Legal & Privacy</button>
+    <button class="tab-btn" id="tab-legal">Legal</button>
   </div>
 
   <div class="main-container">
@@ -245,14 +301,14 @@ Endlosschleife 42
 
       <div class="input-group">
         <label class="header">Typography</label>
-        <div style="display: flex; gap: 10px; align-items: center;">
-          <select id="fontFamily" style="padding: 10px; flex-grow: 1; border: 1px solid #cbd5e1; border-radius: 6px;">
+        <div style="display: flex; gap: 10px; align-items: center; flex-wrap: wrap;">
+          <select id="fontFamily" style="padding: 10px; flex-grow: 1; border: 1px solid #cbd5e1; border-radius: 6px; min-width: 150px;">
             <option value="Roboto">Roboto</option>
             <option value="Open Sans">Open Sans</option>
             <option value="Lora">Lora</option>
             <option value="Merriweather">Merriweather</option>
           </select>
-          <button id="loadLocalFontsBtn" style="padding: 10px 15px; font-size: 14px; background: #475569; color: white; border: none; border-radius: 6px; cursor: pointer;">Load System Fonts</button>
+          <button id="loadLocalFontsBtn" style="padding: 10px 15px; font-size: 14px; background: #475569; color: white; border: none; border-radius: 6px; cursor: pointer; flex-grow: 1;">Load System Fonts</button>
         </div>
       </div>
 
